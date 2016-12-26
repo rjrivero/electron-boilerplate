@@ -10,6 +10,10 @@ import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import createWindow from './helpers/window';
 
+import Config from 'electron-config';
+import { scan } from './contaplus/scan';
+import { companies } from './contaplus/companies';
+
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
 import env from './env';
@@ -49,6 +53,23 @@ app.on('ready', function () {
     if (env.name === 'development') {
         mainWindow.openDevTools();
     }
+
+    let config = new Config({ name: env.name })
+    scan(config, true)
+    .then((folders) => {
+        if (folders.length > 0) {
+            return companies(config, folders[0], true)
+        }
+        return new Map()
+    })
+    .then((companies) => {
+        console.log(companies)
+        console.log("STORE:")
+        console.log(config.store)
+    })
+    .catch((err) => {
+        console.log(err)
+    })
 });
 
 app.on('window-all-closed', function () {
