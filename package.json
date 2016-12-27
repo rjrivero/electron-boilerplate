@@ -32,6 +32,7 @@
     "drivelist": "^5.0.4",
     "electron-config": "^0.2.1",
     "fs-jetpack": "^0.10.2",
+    "jquery": "^1.12.4",
     "node-dbf": "^0.2.1"
   },
   "devDependencies": {

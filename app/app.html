@@ -1,27 +1,160 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
+    <!-- Boostrap headers -->
     <meta charset="utf-8">
-    <title>Electron Boilerplate</title>
-
-    <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
-
-    <script src="helpers/context_menu.js"></script>
-    <script src="helpers/external_links.js"></script>
-
-    <script src="app.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cargador Contaplus</title>
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme-3.3.7.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
+<div class="container">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
     <div class="container">
-        <h1 id="greet"></h1>
-        <p class="subtitle">
-            Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
-        </p>
-        <p class="subtitle">
-            You are in <strong id="env-name"></strong> environment.
-        </p>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Conmuta navegación</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Cargador Contaplus</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a data-toggle="tab" href="#tab_asistente">Asistente</a></li>
+                <li><a data-toggle="tab" href="#tab_ajustes">Ajustes</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="tab-content">
+
+    <div class="tab-pane active" id="tab_asistente">
+        <h4>Asistente</h4>
+
+        <!-- Primer elemento del panel: Ruta de Contaplus -->
+        <div id="ruta_contaplus_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#ruta_contaplus_body">Ruta de instalación de Contaplus</a></div>
+            <!-- wrapper div to avoid jumpy animation.
+            See https://github.com/twbs/bootstrap/issues/12093 -->
+            <div id="ruta_contaplus_body" class="collapse">
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="ruta_contaplus_select">Ruta de instalación:</label>
+                        <div class="col-sm-9"><select class="form-control" id="ruta_contaplus_select" disabled></select></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12"><div class="btn-group">
+                            <button type="submit" class="btn disabled" id="ruta_contaplus_search">Buscar</button>
+                            <button type="submit" class="btn disabled" id="ruta_contaplus_apply">Aplicar</button>
+                        </div></div>
+                    </div>
+                </form>
+            </div></div>
+        </div>
+
+        <!-- Segundo elemento del panel: Empresas -->
+        <div id="empresa_contaplus_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#empresa_contaplus_body">Empresa seleccionada</a></div>
+            <div id="empresa_contaplus_body" class="collapse">
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="empresa_contaplus_select">Empresa seleccionada:</label>
+                        <div class="col-sm-9"><select class="form-control" id="empresa_contaplus_select" disabled>
+                        </select></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12"><button type="submit" class="btn disabled" id="empresa_contaplus_apply">Aplicar</button></div>
+                    </div>
+                </form>
+            </div></div>
+        </div>
+
+        <!-- Tercer elemento del panel: Credenciales -->
+        <div id="credenciales_usuario_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#credenciales_usuario_body">Credenciales de usuario</a></div>
+            <div id="credenciales_usuario_body" class="collapse">
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="credenciales_usuario_username">Dirección de correo:</label>
+                        <div class="col-sm-9"><input type="email" class="form-control" id="credenciales_usuario_username" disabled/></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="credenciales_usuario_password">Contraseña:</label>
+                        <div class="col-sm-9"><input type="password" class="form-control" id="credenciales_usuario_password" disabled/></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12"><button type="submit" class="btn disabled" id="credenciales_usuario_apply">Aplicar</button></div>
+                    </div>
+                </form>
+            </div></div>
+        </div>
+
+        <!-- Cuarto elemento del panel: Fuentes -->
+        <div id="fuentes_contaplus_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#fuentes_contaplus_body">Fuentes de datos</a></div>
+            <div id="fuentes_contaplus_body" class="collapse">
+            <div class="panel-body">
+                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_balance" value="" disabled>Balance</label></div>
+                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_pyg" value="" disabled>Cuenta de resultados</label></div>
+                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_facturas" value="" disabled>Facturas</label></div>
+                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_cobros" value="" disabled>Cobros</label></div>
+            </div></div>
+        </div>
+
+        <!-- Quinto elemento del panel: ejercicios -->
+        <div id="ejercicios_contaplus_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#ejercicios_contaplus_body">Actualizar ejercicios</a></div>
+            <div id="ejercicios_contaplus_body" class="collapse">
+            <div class="panel-body">
+            <p>...</p>
+            </div></div>
+        </div>
+
     </div>
 
+    <div class="tab-pane" id="tab_ajustes">
+        <h4 id="greet">Ajustes</h4>
+        <p>Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
+        You are in <strong id="env-name"></strong> environment.</p>
+    </div>
+
+</div><!-- tab content -->
+
+</div><!-- end of container -->
+
+<!-- Bootstrap js -->
+<script>window.$ = window.jQuery = require('jquery');</script>
+<script src="js/bootstrap-3.3.7.min.js"></script>
+<!-- Electron js -->
+<script src="helpers/context_menu.js"></script>
+<script src="helpers/external_links.js"></script>
+<script src="app.js"></script>
+<script>
+// Fix for NavBar auto-close on click
+// See https://github.com/twbs/bootstrap/issues/12852
+$(document).on('click','.navbar-collapse.in',function(e) {
+    if( $(e.target).is('a') && ( $(e.target).attr('class') != 'dropdown-toggle' ) ) {
+        $(this).collapse('hide');
+    }
+});
+</script>
 </body>
 </html>

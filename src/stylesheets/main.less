@@ -1,25 +1,22 @@
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
+/*
+ Avoid overlapping navbar.
+ */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: sans-serif;
+    padding-top: 65px;
 }
 
-a {
-    text-decoration: none;
+/*
+ Align form labels to the left. See
+ stackoverflow.com/questions/31303482/bootstrap-label-align-left
+*/
+.form-horizontal .control-label {
+    text-align: left !important;
 }
 
-.container {
+.electron-container {
     text-align: center;
 }
 
-.subtitle {
+.electron-subtitle {
     color: gray;
 }
