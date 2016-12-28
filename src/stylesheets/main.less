@@ -13,10 +13,34 @@ body {
     text-align: left !important;
 }
 
-.electron-container {
-    text-align: center;
+/*
+ Change text color in panel headings, to make it visible
+ */
+.panel-primary > .panel-heading > a {
+    color: white;
+    text-decoration: none;
+}
+.panel-error > .panel-heading > a {
+    color: darkred;
+    text-decoration: none;
+}
+.panel-success > .panel-heading > a {
+    color: darkgreen;
+    text-decoration: none;
+}
+.panel > .panel-heading > a:link {
+    text-decoration: none;
+}
+.panel > .panel-heading > a:visited {
+    text-decoration: none;
+}
+.panel > .panel-heading > a:hover {
+    text-decoration: none;
 }
 
-.electron-subtitle {
-    color: gray;
+// Disable collapse animation. See
+// http://stackoverflow.com/questions/21162313
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
 }

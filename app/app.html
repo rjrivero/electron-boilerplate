@@ -19,18 +19,18 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <button tabindex=-1 type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Conmuta navegación</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Cargador Contaplus</a>
+            <a tabindex=-1 class="navbar-brand" href="#">Cargador Contaplus</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a data-toggle="tab" href="#tab_asistente">Asistente</a></li>
-                <li><a data-toggle="tab" href="#tab_ajustes">Ajustes</a></li>
+                <li class="active"><a tabindex=-1 data-toggle="tab" href="#tab_asistente">Asistente</a></li>
+                <li><a tabindex=-1 data-toggle="tab" href="#tab_ajustes">Ajustes</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -44,11 +44,10 @@
         <!-- Primer elemento del panel: Ruta de Contaplus -->
         <div id="ruta_contaplus_heading" class="panel panel-default">
          <!-- Default panel contents -->
-            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#ruta_contaplus_body">Ruta de instalación de Contaplus</a></div>
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#ruta_contaplus_body">Ruta de instalación de Contaplus</a></div>
             <!-- wrapper div to avoid jumpy animation.
             See https://github.com/twbs/bootstrap/issues/12093 -->
-            <div id="ruta_contaplus_body" class="collapse">
-            <div class="panel-body">
+            <div id="ruta_contaplus_body" class="panel-body hidden">
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="control-label col-sm-3" for="ruta_contaplus_select">Ruta de instalación:</label>
@@ -56,20 +55,19 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12"><div class="btn-group">
-                            <button type="submit" class="btn disabled" id="ruta_contaplus_search">Buscar</button>
-                            <button type="submit" class="btn disabled" id="ruta_contaplus_apply">Aplicar</button>
+                            <button type="submit" class="btn disabled" disabled id="ruta_contaplus_search">Buscar</button>
+                            <button type="submit" class="btn disabled" disabled id="ruta_contaplus_apply">Aplicar</button>
                         </div></div>
                     </div>
                 </form>
-            </div></div>
+            </div>
         </div>
 
         <!-- Segundo elemento del panel: Empresas -->
         <div id="empresa_contaplus_heading" class="panel panel-default">
          <!-- Default panel contents -->
-            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#empresa_contaplus_body">Empresa seleccionada</a></div>
-            <div id="empresa_contaplus_body" class="collapse">
-            <div class="panel-body">
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#empresa_contaplus_body">Empresa seleccionada</a></div>
+            <div id="empresa_contaplus_body" class="panel-body hidden">
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="control-label col-sm-3" for="empresa_contaplus_select">Empresa seleccionada:</label>
@@ -77,18 +75,17 @@
                         </select></div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12"><button type="submit" class="btn disabled" id="empresa_contaplus_apply">Aplicar</button></div>
+                        <div class="col-sm-12"><button type="submit" class="btn disabled" disabled id="empresa_contaplus_apply">Aplicar</button></div>
                     </div>
                 </form>
-            </div></div>
+            </div>
         </div>
 
         <!-- Tercer elemento del panel: Credenciales -->
         <div id="credenciales_usuario_heading" class="panel panel-default">
          <!-- Default panel contents -->
-            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#credenciales_usuario_body">Credenciales de usuario</a></div>
-            <div id="credenciales_usuario_body" class="collapse">
-            <div class="panel-body">
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#credenciales_usuario_body">Credenciales de usuario</a></div>
+            <div id="credenciales_usuario_body" class="panel-body hidden">
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="control-label col-sm-3" for="credenciales_usuario_username">Dirección de correo:</label>
@@ -99,33 +96,31 @@
                         <div class="col-sm-9"><input type="password" class="form-control" id="credenciales_usuario_password" disabled/></div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12"><button type="submit" class="btn disabled" id="credenciales_usuario_apply">Aplicar</button></div>
+                        <div class="col-sm-12"><button type="submit" class="btn disabled" disabled  id="credenciales_usuario_apply">Aplicar</button></div>
                     </div>
                 </form>
-            </div></div>
+            </div>
         </div>
 
         <!-- Cuarto elemento del panel: Fuentes -->
         <div id="fuentes_contaplus_heading" class="panel panel-default">
          <!-- Default panel contents -->
-            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#fuentes_contaplus_body">Fuentes de datos</a></div>
-            <div id="fuentes_contaplus_body" class="collapse">
-            <div class="panel-body">
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#fuentes_contaplus_body">Fuentes de datos</a></div>
+            <div id="fuentes_contaplus_body" class="panel-body hidden">
                  <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_balance" value="" disabled>Balance</label></div>
                  <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_pyg" value="" disabled>Cuenta de resultados</label></div>
                  <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_facturas" value="" disabled>Facturas</label></div>
                  <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_cobros" value="" disabled>Cobros</label></div>
-            </div></div>
+            </div>
         </div>
 
         <!-- Quinto elemento del panel: ejercicios -->
         <div id="ejercicios_contaplus_heading" class="panel panel-default">
          <!-- Default panel contents -->
-            <div class="panel-heading"><a data-toggle="collapse" data-parent="#tab_asistente" href="#ejercicios_contaplus_body">Actualizar ejercicios</a></div>
-            <div id="ejercicios_contaplus_body" class="collapse">
-            <div class="panel-body">
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#ejercicios_contaplus_body">Actualizar ejercicios</a></div>
+            <div id="ejercicios_contaplus_body" class="panel-body hidden">
             <p>...</p>
-            </div></div>
+            </div>
         </div>
 
     </div>
