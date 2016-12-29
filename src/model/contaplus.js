@@ -160,9 +160,9 @@ export class ContaplusModel {
         console.log("ContaplusModel::SetCompany(" + company + ")")
         // Remove companies if folder is being changed or cleared
         if (company) {
-            config.set("company", company)
+            this.config.set("company", company)
         } else {
-            config.delete("company")
+            this.config.delete("company")
         }
     }
 

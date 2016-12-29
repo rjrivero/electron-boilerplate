@@ -8,8 +8,10 @@ import Config from 'electron-config';
 
 import { bindToggles } from './controller/tools';
 import { ContaplusModel } from './model/contaplus';
+import { CoheteModel } from './model/cohete';
 import { RutaContaplusControl } from './controller/ruta_contaplus';
 import { EmpresaContaplusControl } from './controller/empresa_contaplus';
+import { LoginCoheteControl } from './controller/login_cohete';
 
 import env from './env';
 
@@ -32,16 +34,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Bind events from controllers
     let config = new Config({ name: env.name })
-    let model = new ContaplusModel(config)
-    let ruta_contaplus = new RutaContaplusControl(model)
-    let empresa_contaplus = new EmpresaContaplusControl(model)
+    let contaplus_model = new ContaplusModel(config, env)
+    let cohete_model = new CoheteModel(config, env)
+    let ruta_contaplus = new RutaContaplusControl(contaplus_model)
+    let empresa_contaplus = new EmpresaContaplusControl(contaplus_model)
+    let login_cohete = new LoginCoheteControl(cohete_model)
 
     // Enlazar eventos de ruta_contaplus
-    ruta_contaplus.onSelected((folder) => {
+    ruta_contaplus.onSelected(() => {
         empresa_contaplus.Focus()
     })
     ruta_contaplus.onCleared(() => {
         empresa_contaplus.Blur(true)
+    })
+
+    // Enlazar eventos de empresa_contaplus
+    empresa_contaplus.onSelected(() => {
+        login_cohete.Focus()
+    })
+    empresa_contaplus.onCleared(() => {
+        login_cohete.Blur(true)
     })
 
     ruta_contaplus.Focus()

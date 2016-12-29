@@ -1,4 +1,8 @@
 {
   "name": "development",
-  "description": "Add here any environment specific stuff you like."
+  "description": "Add here any environment specific stuff you like.",
+
+  "url_credentials": "https://devel.smartbi.es/tenants/devel/api/token",
+  "url_username": "subject",
+  "url_password": "secret"
 }
