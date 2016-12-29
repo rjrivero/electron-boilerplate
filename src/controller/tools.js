@@ -30,7 +30,7 @@ export function bindToggles() {
     $('a[data-toggle=hidden]').each((index, raw) => {
         let toggle = $(raw)
         let body = $(toggle.attr("data-target"))
-        toggle.click((event) => {
+        toggle.off().on("click", (event) => {
             event.preventDefault()
             bodies.forEach((other) => {
                 other.addClass("hidden")

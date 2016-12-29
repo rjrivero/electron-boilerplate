@@ -7,7 +7,9 @@ import jetpack from 'fs-jetpack'; // module loaded from npm
 import Config from 'electron-config';
 
 import { bindToggles } from './controller/tools';
-import { RutaContaplus } from './controller/ruta_contaplus';
+import { ContaplusModel } from './model/contaplus';
+import { RutaContaplusControl } from './controller/ruta_contaplus';
+import { EmpresaContaplusControl } from './controller/empresa_contaplus';
 
 import env from './env';
 
@@ -30,7 +32,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Bind events from controllers
     let config = new Config({ name: env.name })
-    let ruta_contaplus = new RutaContaplus(config)
+    let model = new ContaplusModel(config)
+    let ruta_contaplus = new RutaContaplusControl(model)
+    let empresa_contaplus = new EmpresaContaplusControl(model)
+
+    // Enlazar eventos de ruta_contaplus
+    ruta_contaplus.onSelected((folder) => {
+        empresa_contaplus.Focus()
+    })
+    ruta_contaplus.onCleared(() => {
+        empresa_contaplus.Blur(true)
+    })
+
     ruta_contaplus.Focus()
     //ruta_contaplus.populate()
     /*
