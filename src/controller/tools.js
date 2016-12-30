@@ -28,17 +28,45 @@ export function bindToggles() {
     console.log("tools::toggleAsistente")
     let bodies = new Array()
     $('a[data-toggle=hidden]').each((index, raw) => {
-        let toggle = $(raw)
-        let body = $(toggle.attr("data-target"))
-        toggle.off().on("click", (event) => {
-            event.preventDefault()
-            bodies.forEach((other) => {
-                other.addClass("hidden")
-            })
-            body.removeClass("hidden")
-        })
-        bodies.push(body)
+        let targets = bindToggle($(raw), bodies)
+        bodies.push.apply(bodies, targets)
     })
+}
+
+// Bind a single toggle
+function bindToggle(toggle, bodies) {
+    // Each toggle may have several targets, space separated
+    let ids = toggle.attr("data-target").split(" ")
+    let targets = new Array()
+    for (let item of ids) {
+        console.log("Binding toggle " + item)
+        targets.push($(item))
+    }
+    // Expands a toggle
+    let expand = function(event) {
+        event.preventDefault()
+        // Hide other panels
+        bodies.forEach((other) => {
+            other.addClass("hidden")
+        })
+        // Open my panels
+        targets.forEach((target) => {
+            target.removeClass("hidden")
+        })
+        // Grab focus
+        if (!toggle.is(":focus")) {
+            toggle.focus()
+        }
+    }
+    // Bind expand function to a global toggle
+    let expander = $("#expand_" + ids[0].substring(1))
+    if (expander) {
+        expander.off().on("click", expand)
+    }
+    // Attach expand function to both click and focus
+    toggle.off().on("click", expand)
+    toggle.on("focus", expand)
+    return targets
 }
 
 // Force show, toggling with parent. See

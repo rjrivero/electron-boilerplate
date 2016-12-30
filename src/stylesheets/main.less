@@ -1,6 +1,4 @@
-/*
- Avoid overlapping navbar.
- */
+// Avoid overlapping navbar.
 body {
     padding-top: 65px;
 }
@@ -13,9 +11,7 @@ body {
     text-align: left !important;
 }
 
-/*
- Change text color in panel headings, to make it visible
- */
+// Change text color in panel headings, to make it visible
 .panel-primary > .panel-heading > a {
     color: white;
     text-decoration: none;
@@ -28,6 +24,8 @@ body {
     color: darkgreen;
     text-decoration: none;
 }
+
+// Remove underlining from heading' links
 .panel > .panel-heading > a:link {
     text-decoration: none;
 }
@@ -37,10 +35,39 @@ body {
 .panel > .panel-heading > a:hover {
     text-decoration: none;
 }
+.panel > .panel-heading > a:focus {
+    outline: none;
+}
 
 // Disable collapse animation. See
 // http://stackoverflow.com/questions/21162313
 .collapsing {
     -webkit-transition: none;
     transition: none;
+}
+
+// Allow spinning overlay to overlap panel body
+.panel-body {
+    position: relative;
+}
+
+// Spinner overlay
+.overlay
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 3em;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: 9999;
+    color: black;
+    display: inline-block;
+}
+
+// Links inside a table
+td a, td a:link, td a:visited, td a:hover, td a:focus {
+     color: black;
+     outline: none;
 }

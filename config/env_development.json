@@ -4,5 +4,6 @@
 
   "url_credentials": "https://devel.smartbi.es/tenants/devel/api/token",
   "url_username": "subject",
-  "url_password": "secret"
+  "url_password": "secret",
+  "url_validate": "https://devel.smartbi.es/tenants/devel/api/token"
 }

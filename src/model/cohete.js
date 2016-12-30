@@ -1,4 +1,4 @@
-import { Client } from 'node-rest-client';
+import unirest from 'unirest';
 
 export class CoheteModel {
 
@@ -15,49 +15,86 @@ export class CoheteModel {
         this.config.set("email", email)
     }
 
-    CheckCredentials(email, pass) {
-        return this.checkEmail(email, pass)
-    }
-
-    checkEmail(email, pass) {
+    // Checks the email credentials are valid
+    CheckEmail(email, pass) {
+        console.log("CoheteModel::CheckEmail (" + email + ")")
         let env = this.env
         // Build request
         let url = env.url_credentials
         let username = env.url_username
         let password = env.url_password
         let self = this
-        let cred = new Object()
-        cred[username] = email
-        cred[password] = pass
-        let options = {
-            headers: { "Content-Type": "application/json" },
-            requestConfig: {
-                timeout: 3000 //request timeout in milliseconds
-                //noDelay: true, //Enable/disable the Nagle algorithm
-                //keepAlive: true, //Enable/disable keep-alive functionalityidle socket.
-                //keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent
-            },
-            responseConfig: {
-                timeout: 3000 //response timeout
-            }
-        }
         // Configure the client
-        let client = new Client(options)
         return new Promise((resolve, reject) => {
-            client.post(url, { data: cred }, function (data, response) {
-                console.log("CREDENCIALES PROBADAS: " + JSON.stringify(data))
-                self.SetEmail(email)
-                resolve(data)
-            })
-            .on("requestTimeout", (req) => {
-                reject("No se puede conectar con el servidor de autenticación")
-            })
-            .on("responseTimeout", (res) => {
-                reject("No se han podido comprobar las credenciales")
-            })
-            .on("error", (err) => {
-                reject(err)
+            unirest.post(url)
+            .header('Accept', 'application/json')
+            .field(username, email)
+            .field(password, pass)
+            .timeout(3000)
+            .end((response) => {
+                try {
+                    if (response.ok) {
+                        self.SetEmail(email)
+                        self.SetToken(response.body.message)
+                        resolve(response.body)
+                    } else {
+                        let err = "Error contactando con el servidor.\n" +
+                            "Por favor compruebe sus credenciales y su conexión a Internet.\n"
+                        if (response.body.message) {
+                            err += "El servidor respondió: " + response.body.message
+                        }
+                        reject(err)
+                    }
+                } catch(err) {
+                    reject(err)
+                }
             })
         })
+    }
+
+    GetToken() {
+        return this.config.get("token")
+    }
+
+    // Check the token is still valid
+    CheckToken() {
+        console.log("CoheteModel::CheckToken")
+        let url = this.env.url_validate
+        let token = this.config.get("token")
+        let self = this
+        return new Promise((resolve, reject) => {
+            if(!token) {
+                resolve(false)
+            }
+            unirest.get(url)
+            .header("Accept", "application/json")
+            .header("X-Access-Token", token)
+            .timeout(3000)
+            .end((response) => {
+                try {
+                    if (response.ok) {
+                        console.log("CheckToken: " + JSON.stringify(response.body))
+                        resolve(response.body.success === true)
+                    } else if (response.code == 401) {
+                        // Credentials are expired
+                        reject("Nombre de usuario o contraseña incorrectos")
+                    } else {
+                        let err = "Error contactando con el servidor.\n" +
+                            "Por favor compruebe sus credenciales y su conexión a Internet.\n"
+                        if (response.body.message) {
+                            err += "El servidor respondió: " + response.body.message
+                        }
+                        reject(err)
+                    }
+                } catch(err) {
+                    reject(err)
+                }
+            })
+        })
+    }
+
+    SetToken(token) {
+        console.log("CoheteModel::SetToken")
+        this.config.set("token", token)
     }
 }

@@ -1,23 +1,9 @@
-import { SelectorPanelControl } from './common'
-import { enableButton } from './tools'
+import { SelectorPanelControl } from './selector_panel'
 
 export class RutaContaplusControl extends SelectorPanelControl {
 
     constructor(model) {
         super(model, "ruta_contaplus")
-        this.search = $("#ruta_contaplus_search")
-        let self = this
-        this.search.off().on("click", (event) => {
-            event.preventDefault()
-            self.populateSelector(true)
-        })
-    }
-
-    // Activates the control, sets focus on the tab
-    Focus() {
-        super.Focus()
-        // Enable search button
-        enableButton(this.search)
     }
 
     // Set cached value to model

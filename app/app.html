@@ -41,52 +41,12 @@
     <div class="tab-pane active" id="tab_asistente">
         <h4>Asistente</h4>
 
-        <!-- Primer elemento del panel: Ruta de Contaplus -->
-        <div id="ruta_contaplus_heading" class="panel panel-default">
-         <!-- Default panel contents -->
-            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#ruta_contaplus_body">Ruta de instalación de Contaplus</a></div>
-            <!-- wrapper div to avoid jumpy animation.
-            See https://github.com/twbs/bootstrap/issues/12093 -->
-            <div id="ruta_contaplus_body" class="panel-body hidden">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="control-label col-sm-3" for="ruta_contaplus_select">Ruta de instalación:</label>
-                        <div class="col-sm-9"><select class="form-control" id="ruta_contaplus_select" disabled></select></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12"><div class="btn-group">
-                            <button type="submit" class="btn disabled" disabled id="ruta_contaplus_search">Actualizar Datos</button>
-                            <button type="submit" class="btn disabled" disabled id="ruta_contaplus_apply">Aplicar</button>
-                        </div></div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Segundo elemento del panel: Empresas -->
-        <div id="empresa_contaplus_heading" class="panel panel-default">
-         <!-- Default panel contents -->
-            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#empresa_contaplus_body">Empresa(s)</a></div>
-            <div id="empresa_contaplus_body" class="panel-body hidden">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="control-label col-sm-3" for="empresa_contaplus_select">Empresa seleccionada:</label>
-                        <div class="col-sm-9"><select class="form-control" id="empresa_contaplus_select" disabled>
-                        </select></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12"><button type="submit" class="btn disabled" disabled id="empresa_contaplus_apply">Aplicar</button></div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Tercer elemento del panel: Credenciales -->
+        <!-- Credenciales de usuario -->
         <div id="credenciales_usuario_heading" class="panel panel-default">
          <!-- Default panel contents -->
             <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#credenciales_usuario_body">Credenciales de usuario</a></div>
             <div id="credenciales_usuario_body" class="panel-body hidden">
-                <form class="form-horizontal">
+                <div><form class="form-horizontal">
                     <div class="form-group">
                         <label class="control-label col-sm-3" for="credenciales_usuario_username">Dirección de correo:</label>
                         <div class="col-sm-9"><input type="email" class="form-control" id="credenciales_usuario_username" disabled/></div>
@@ -98,28 +58,146 @@
                     <div class="form-group">
                         <div class="col-sm-12"><button type="submit" class="btn disabled" disabled  id="credenciales_usuario_apply">Aplicar</button></div>
                     </div>
-                </form>
+                </form></div>
+                <div id="credenciales_usuario_spinner" class="overlay hidden">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Cuarto elemento del panel: Fuentes -->
+        <!-- Ruta de Contaplus -->
+        <div id="ruta_contaplus_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#ruta_contaplus_body">Ruta de instalación de Contaplus</a></div>
+            <!-- wrapper div to avoid jumpy animation.
+            See https://github.com/twbs/bootstrap/issues/12093 -->
+            <div id="ruta_contaplus_body" class="panel-body hidden">
+                <div><form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="ruta_contaplus_select">Ruta de instalación:</label>
+                        <div class="col-sm-9"><select class="form-control" id="ruta_contaplus_select" disabled></select></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12"><div class="btn-group">
+                            <button type="submit" class="btn disabled" disabled id="ruta_contaplus_search">Actualizar Datos</button>
+                            <button type="submit" class="btn disabled" disabled id="ruta_contaplus_apply">Aplicar</button>
+                        </div></div>
+                    </div>
+                </form></div>
+                <div id="ruta_contaplus_spinner" class="overlay hidden">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empresas Contaplus -->
+        <div id="empresa_contaplus_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#empresa_contaplus_body">Empresa(s)</a></div>
+            <div id="empresa_contaplus_body" class="panel-body hidden">
+                <div><form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="empresa_contaplus_select">Empresa seleccionada:</label>
+                        <div class="col-sm-9"><select class="form-control" id="empresa_contaplus_select" disabled>
+                        </select></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12"><div class="btn-group">
+                            <button type="submit" class="btn disabled" disabled id="empresa_contaplus_search">Actualizar Datos</button>
+                            <button type="submit" class="btn disabled" disabled id="empresa_contaplus_apply">Aplicar</button>
+                        </div></div>
+                    </div>
+                </form></div>
+                <div id="empresa_contaplus_spinner" class="overlay hidden">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de ejercicios Contaplus -->
+        <div id="ejercicios_contaplus_heading" class="panel panel-default">
+         <!-- Default panel contents -->
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#ejercicios_contaplus_body">Ejercicio(s)</a></div>
+            <div id="ejercicios_contaplus_body" class="panel-body hidden">
+                <form class="row">
+                    <div class="form-group col-xs-6 col-sm-3 hidden" id="ejercicios_contaplus_line_0"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_0" disabled/><span id="ejercicios_contaplus_label_0"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_1"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_1" disabled/><span id="ejercicios_contaplus_label_1"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_3"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_2" disabled/><span id="ejercicios_contaplus_label_2"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_3"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_3" disabled/><span id="ejercicios_contaplus_label_3"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_4"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_4" disabled/><span id="ejercicios_contaplus_label_4"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_5"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_5" disabled/><span id="ejercicios_contaplus_label_5"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_6"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_6" disabled/><span id="ejercicios_contaplus_label_6"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_7"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_7" disabled/><span id="ejercicios_contaplus_label_7"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_8"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_8" disabled/><span id="ejercicios_contaplus_label_8"/></label></div></div>
+                    <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_9"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_9" disabled/><span id="ejercicios_contaplus_label_9"/></label></div></div>
+                    <div class="form-group col-xs-12">
+                        <button type="submit" class="btn disabled" disabled id="ejercicios_contaplus_apply">Aplicar</button>
+                    </div>
+                </form>
+                <div id="ejercicios_contaplus_spinner" class="overlay hidden">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fuentes de datos Contaplus -->
         <div id="fuentes_contaplus_heading" class="panel panel-default">
          <!-- Default panel contents -->
             <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#fuentes_contaplus_body">Fuentes de datos</a></div>
             <div id="fuentes_contaplus_body" class="panel-body hidden">
-                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_balance" value="" disabled>Balance</label></div>
-                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_pyg" value="" disabled>Cuenta de resultados</label></div>
-                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_facturas" value="" disabled>Facturas</label></div>
-                 <div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_cobros" value="" disabled>Cobros</label></div>
+                <form>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_0"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_0" disabled/><span id="fuentes_contaplus_label_0"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_1"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_1" disabled/><span id="fuentes_contaplus_label_1"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_3"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_2" disabled/><span id="fuentes_contaplus_label_2"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_3"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_3" disabled/><span id="fuentes_contaplus_label_3"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_4"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_4" disabled/><span id="fuentes_contaplus_label_4"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_5"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_5" disabled/><span id="fuentes_contaplus_label_5"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_6"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_6" disabled/><span id="fuentes_contaplus_label_6"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_7"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_7" disabled/><span id="fuentes_contaplus_label_7"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_8"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_8" disabled/><span id="fuentes_contaplus_label_8"/></label></div></div>
+                    <div class="form-group hidden" id="fuentes_contaplus_line_9"><div class="checkbox"><label><input type="checkbox" id="fuentes_contaplus_check_9" disabled/><span id="fuentes_contaplus_label_9"/></label></div></div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn disabled" disabled id="fuentes_contaplus_apply">Aplicar</button>
+                    </div>
+                </form>
+                <div id="fuentes_contaplus_spinner" class="overlay hidden">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Quinto elemento del panel: ejercicios -->
-        <div id="ejercicios_contaplus_heading" class="panel panel-default">
+        <!-- Pestaña final: lanza los trabajos -->
+        <div id="lanza_trabajo_heading" class="panel panel-default">
          <!-- Default panel contents -->
-            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#ejercicios_contaplus_body">Actualizar ejercicios</a></div>
-            <div id="ejercicios_contaplus_body" class="panel-body hidden">
-            <p>...</p>
+            <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#lanza_trabajo_table #lanza_trabajo_body">Lanza tareas</a></div>
+            <table class="table table-condensed table-stripped hidden" id="lanza_trabajo_table"><tbody>
+                <tr><td><a href="#" id="expand_credenciales_usuario_body">Usuario</a></td><td><span id="lanza_trabajo_usuario"/></td></tr>
+                <tr><td><a href="#" id="expand_ruta_contaplus_body">Ruta Contaplus</a></td><td><span id="lanza_trabajo_ruta"/></td></tr>
+                <tr><td><a href="#" id="expand_empresa_contaplus_body">Empresa</a></td><td><span id="lanza_trabajo_empresa"/></td></tr>
+                <tr><td><a href="#" id="expand_ejercicios_contaplus_body">Ejercicios</a></td><td><span id="lanza_trabajo_ejercicios"/></td></tr>
+                <tr><td><a href="#" id="expand_fuentes_contaplus_body">Fuentes</a></td><td><span id="lanza_trabajo_fuentes"/></td></tr>
+            </tbody></table>
+            <div id="lanza_trabajo_body" class="panel-body hidden">
+                <form><div class="form-group">
+                    <button type="submit" class="btn disabled" disabled id="fuentes_contaplus_apply">Aplicar</button>
+                </div>
+                </form>
+                <div id="lanza_trabajo_spinner" class="overlay hidden">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
             </div>
         </div>
 

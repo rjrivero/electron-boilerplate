@@ -1,4 +1,4 @@
-import { SelectorPanelControl } from './common'
+import { SelectorPanelControl } from './selector_panel'
 
 export class EmpresaContaplusControl extends SelectorPanelControl {
 

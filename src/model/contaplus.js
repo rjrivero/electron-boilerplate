@@ -84,7 +84,6 @@ export class ContaplusModel {
         let currentFolder = this.GetFolder()
         if (!folder || (currentFolder && (folder != currentFolder))) {
             config.delete("companies")
-            config.delete("company")
         }
         if (folder) {
             config.set("folder", folder)
@@ -107,12 +106,7 @@ export class ContaplusModel {
             }
             if (!refresh && config.has('companies')) {
                 // Build a Map (config-store saves an Array)
-                let companyArray = config.get('companies')
-                let companies = new Map()
-                for (let entry of companyArray) {
-                    companies.set(entry[0], entry[1])
-                }
-                resolve(companies)
+                resolve(self.GetCompanies())
                 return
             }
             let companyPath = path.join(folder, "ContaBLD", "EMP", "Empresa.dbf")
@@ -149,7 +143,21 @@ export class ContaplusModel {
         })
     }
 
-    // Gets the currentl selected folder
+    // Gets a Map of company name => []years
+    GetCompanies() {
+        console.log("ContaplusModel::GetCompanies")
+        // Builds a Map (config-store saves an Array)
+        let companyArray = this.config.get('companies')
+        let companies = new Map()
+        if (companyArray) {
+            for (let entry of companyArray) {
+                companies.set(entry[0], entry[1])
+            }
+        }
+        return companies
+    }
+
+    // Gets the currently selected folder
     GetCompany() {
         console.log("ContaplusModel::GetCompany")
         return this.config.get("company")
@@ -164,6 +172,12 @@ export class ContaplusModel {
         } else {
             this.config.delete("company")
         }
+    }
+
+    // Sets the year
+    SetYears(years) {
+        console.log("ContaplusModel::SetYears(" + years + ")")
+        this.config.set("years", years)
     }
 
     // Test if the given path has a "GrupoSP" folder
