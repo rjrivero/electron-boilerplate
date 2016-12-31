@@ -24,10 +24,10 @@ export class LoginPanelControl extends PanelControl {
         this.populateForm()
     }
 
-    Blur() {
-        super.Blur()
-        // disable the selector
+    Blur(propagate) {
+        // disable the form
         this.disableForm()
+        super.Blur(propagate)
     }
 
     enableForm() {

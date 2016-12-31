@@ -32,10 +32,10 @@ export class SelectorPanelControl extends PanelControl{
         this.populateSelector(false)
     }
 
-    Blur() {
-        super.Blur()
+    Blur(propagate) {
         // disable the selector
         this.disableSelector()
+        super.Blur(propagate)
     }
 
     canApply() {
@@ -118,8 +118,9 @@ export class SelectorPanelControl extends PanelControl{
                     // Keep consistent behaviour, even without triggering
                     self.setValue(selected)
                 }
-            } else {
-                self.triggerCleared()
+            }
+            if (!matched || refresh) {
+                self.triggerCleared(false)
             }
         })
         .catch((err) => {

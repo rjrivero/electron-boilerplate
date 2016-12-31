@@ -2,6 +2,7 @@ import drivelist from 'drivelist'
 import fs from 'fs'
 import path from 'path'
 import Parser from 'node-dbf'
+import domain from 'domain'
 
 export class ContaplusModel {
 
@@ -68,6 +69,10 @@ export class ContaplusModel {
                 })
             })
         })
+        .then((folders) => {
+            console.log("ContaplusModel::scanFolders:result = " + folders)
+            return folders
+        })
     }
 
     // Gets the currentl selected folder
@@ -109,34 +114,45 @@ export class ContaplusModel {
                 resolve(self.GetCompanies())
                 return
             }
-            let companyPath = path.join(folder, "ContaBLD", "EMP", "Empresa.dbf")
-            let parser = new Parser(companyPath)
-            let companies = new Map()
-            parser.on('record', (record) => {
-                let name = record['NOMBRE']
-                let year = record['EJERCICIO']
-                let cod = record['COD']
-                if (name && year && cod) {
-                    let current = companies.get(name)
-                    if (current === undefined) {
-                        current = new Array()
-                        companies.set(name, current)
-                    }
-                    current.push([year, cod])
-                }
-            })
-            parser.on('end', (p) => {
-                // Store as a hash (config-store cannot save a map)
-                let companyArray = new Array()
-                for (let entry of companies.entries()) {
-                    companyArray.push(entry)
-                }
-                config.set('companies', companyArray)
-                console.log("RESOLVING: " + Array.from(companies.keys()))
-                resolve(companies)
-            })
             try {
-                parser.parse()
+                // Need to use domain to catch unhandled exceptions in node-dbf
+                // This is an ugly hack because parse-dbf fails with an uncaught
+                // exception if the fie does not exist. Talk about ugly...
+                // see https://nodejs.org/api/domain.html
+                // Besides, this is deprecated in node v7.x
+                let errDomain = domain.create()
+                errDomain.on('error', function(err) {
+                    reject(err)
+                })
+                errDomain.run(function() {
+                    let companyPath = path.join(folder, "ContaBLD", "EMP", "Empresa.dbf")
+                    let parser = new Parser(companyPath)
+                    let companies = new Map()
+                    parser.on('header', (header) => { /* catch errors */ })
+                    parser.on('record', (record) => {
+                        let name = record['NOMBRE']
+                        let year = record['EJERCICIO']
+                        let cod = record['COD']
+                        if (name && year && cod) {
+                            let current = companies.get(name)
+                            if (current === undefined) {
+                                current = new Array()
+                                companies.set(name, current)
+                            }
+                            current.push([year, cod])
+                        }
+                    })
+                    parser.on('end', (p) => {
+                        // Store as a hash (config-store cannot save a map)
+                        let companyArray = new Array()
+                        for (let entry of companies.entries()) {
+                            companyArray.push(entry)
+                        }
+                        config.set('companies', companyArray)
+                        resolve(companies)
+                    })
+                    parser.parse()
+                })
             } catch (err) {
                 reject(err)
             }
@@ -180,23 +196,41 @@ export class ContaplusModel {
         this.config.set("years", years)
     }
 
-    // Test if the given path has a "GrupoSP" folder
-    testGrupoSP(mount) {
+    testFile(fileName, wantDir = true) {
         return new Promise((resolve, reject) => {
-            let test = path.join(mount, "GrupoSP")
-            fs.stat(test, (err, stats) => {
+            fs.stat(fileName, (err, stats) => {
                 if (err) {
                     if (err.code == "ENOENT") {
-                        resolve(null)
+                        resolve(false)
                     } else {
                         reject(err)
                     }
-                } else if (!stats.isDirectory()) {
-                    resolve(null)
-                } else  {
-                    resolve(test)
+                } else {
+                    resolve(stats.isDirectory() == wantDir)
                 }
             })
+        })
+        .then((isFile) => {
+            console.log("ContaplusModel::testFile(" + fileName + ", " + wantDir + ") = " + isFile)
+            return isFile
+        })
+    }
+
+    // Test if the given path has a "GrupoSP" folder and an "Empresa.dbf" file
+    testGrupoSP(mount) {
+        let self = this
+        let test = path.join(mount, "GrupoSP")
+        return self.testFile(test, true)
+        .then((isDir) => {
+            if (!isDir) {
+                return false
+            } else {
+                let empFile = path.join(mount, "GrupoSP", "ContaBLD", "EMP", "Empresa.dbf")
+                return self.testFile(empFile, false)
+            }
+        })
+        .then((isFile) => {
+            return (isFile ? test : null)
         })
     }
 }

@@ -90,3 +90,21 @@ export function enableButton(item) {
     switchClass(item, "disabled btn.-*", "btn-default")
     item.prop("disabled", false)
 }
+
+//estilos: primary, success, info, waning, danger
+export function showDialog(style, header, message) {
+    let modal = $("#modal_popup")
+    let title = $("#modal_title")
+    let body = $("#modal_body")
+    title[0].innerHTML = header
+    body[0].innerHTML  = message
+    switchClass(title, "bg-.*", "bg-" + style)
+    modal.modal()
+}
+
+export function showErrorDialog(title, err) {
+    if (err.stack) {
+        console.log(err.stack)
+    }
+    showDialog("warning", title, err.message || err)
+}

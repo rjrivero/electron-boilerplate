@@ -6,7 +6,7 @@ import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
 import Config from 'electron-config';
 
-import { bindToggles } from './controller/tools';
+import { bindToggles, showErrorDialog } from './controller/tools';
 import { ContaplusModel } from './model/contaplus';
 import { CoheteModel } from './model/cohete';
 import { RutaContaplusControl } from './controller/ruta_contaplus';
@@ -45,54 +45,39 @@ document.addEventListener('DOMContentLoaded', function () {
     let fuentes_contaplus = new FuentesContaplusControl(cohete_model)
 
     // Enlazar eventos de login_cohete
-    login_cohete.onSelected(() => {
-        ruta_contaplus.Focus()
-    })
-    login_cohete.onCleared(() => {
-        ruta_contaplus.Blur(true)
+    login_cohete.onSelected(() => { ruta_contaplus.Focus() })
+    login_cohete.onCleared(() => { ruta_contaplus.Blur(true) })
+    login_cohete.onError((err) => {
+        showErrorDialog("Error iniciando sesión", err)
     })
 
     // Enlazar eventos de ruta_contaplus
-    ruta_contaplus.onSelected(() => {
-        empresa_contaplus.Focus()
-    })
-    ruta_contaplus.onCleared(() => {
-        empresa_contaplus.Blur(true)
-    })
-
-    // Enlazar eventos de empresa_contaplus
-    empresa_contaplus.onSelected(() => {
-        ejercicios_contaplus.Focus()
-    })
-    empresa_contaplus.onCleared(() => {
-        ejercicios_contaplus.Blur(true)
+    ruta_contaplus.onSelected(() => { empresa_contaplus.Focus() })
+    ruta_contaplus.onCleared(() => { empresa_contaplus.Blur(true) })
+    ruta_contaplus.onError((err) => {
+        showErrorDialog("Error detectando ruta de instalación de contaplus", err)
     })
 
     // Enlazar eventos de empresa_contaplus
-    ejercicios_contaplus.onSelected(() => {
-        fuentes_contaplus.Focus()
+    empresa_contaplus.onSelected(() => { ejercicios_contaplus.Focus() })
+    empresa_contaplus.onCleared(() => { ejercicios_contaplus.Blur(true) })
+    ruta_contaplus.onError((err) => {
+        showErrorDialog("Error leyendo empresas disponibles", err)
     })
-    ejercicios_contaplus.onCleared(() => {
-        fuentes_contaplus.Blur(true)
+
+    // Enlazar eventos de ejercicios_contaplus
+    ejercicios_contaplus.onSelected(() => { fuentes_contaplus.Focus() })
+    ejercicios_contaplus.onCleared(() => { fuentes_contaplus.Blur(true) })
+    ejercicios_contaplus.onError((err) => {
+        showErrorDialog("Error leyendo ejercicios disponibles", err)
+    })
+
+    // Enlazar eventos de fuentes_contaplus
+    fuentes_contaplus.onSelected(() => { lanza_trabajos.Focus() })
+    fuentes_contaplus.onCleared(() => { lanza_trabajos.Blur(true) })
+    fuentes_contaplus.onError((err) => {
+        showErrorDialog("Error leyendo fuentes configurables", err)
     })
 
     login_cohete.Focus()
-    //ruta_contaplus.populate()
-    /*
-    scan(config, true)
-    .then((folders) => {
-        if (folders.length > 0) {
-            return companies(config, folders[0], true)
-        }
-        return new Map()
-    })
-    .then((companies) => {
-        console.log(companies)
-        console.log("STORE:")
-        console.log(config.store)
-    })
-    .catch((err) => {
-        console.log(err)
-    })
-    */
 });

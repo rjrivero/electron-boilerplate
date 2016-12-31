@@ -23,10 +23,10 @@ export class CheckboxPanelControl extends PanelControl {
         this.populateChecks()
     }
 
-    Blur() {
-        super.Blur()
-        // disable the selector
+    Blur(propagate) {
+        // disable the checkboxes
         this.disableChecks()
+        super.Blur(propagate)
     }
 
     canApply() {
