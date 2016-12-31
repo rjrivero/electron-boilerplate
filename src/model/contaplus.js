@@ -190,10 +190,44 @@ export class ContaplusModel {
         }
     }
 
-    // Sets the year
-    SetYears(years) {
-        console.log("ContaplusModel::SetYears(" + years + ")")
-        this.config.set("years", years)
+    // Returns an array with triples (year, checked, label)
+    GetYearsAvailable() {
+        console.log("ContaplusModel::GetYearsAvailable")
+        let result = new Array()
+        let companies = this.GetCompanies()
+        let company = this.GetCompany()
+        if (companies && company) {
+            let current = companies.get(company)
+            if (current) {
+                let years = current.slice()
+                // sort descending
+                years.sort((a, b) => {
+                    return ((a[0] < b[0]) ? 1 : ((a[1] > b[1]) ? -1 : 0))
+                })
+                // Ony check the first one by default
+                let checked = true
+                for (let year of years) {
+                    result.push([year[0], checked, year[0] + " (Cód. " + year[1] + ")"])
+                    checked = false
+                }
+            }
+        }
+        return result
+    }
+
+    // Sets the selected years
+    SetYearsSelected(years) {
+        console.log("ContaplusModel::SetYearsSelected (" + years + ")")
+        this.years_selected = years
+    }
+
+    // Gets the selected years
+    GetYearsSelected() {
+        console.log("ContaplusModel::GetYearsSelected")
+        if (this.years_selected === undefined) {
+            this.years_selected = new Array()
+        }
+        return this.years_selected
     }
 
     testFile(fileName, wantDir = true) {

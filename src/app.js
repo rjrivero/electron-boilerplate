@@ -9,11 +9,13 @@ import Config from 'electron-config';
 import { bindToggles, showErrorDialog } from './controller/tools';
 import { ContaplusModel } from './model/contaplus';
 import { CoheteModel } from './model/cohete';
+import { SubmitModel } from './model/submit';
 import { RutaContaplusControl } from './controller/ruta_contaplus';
 import { EmpresaContaplusControl } from './controller/empresa_contaplus';
 import { EjerciciosContaplusControl } from './controller/ejercicios_contaplus';
 import { FuentesContaplusControl } from './controller/fuentes_contaplus';
 import { LoginCoheteControl } from './controller/login_cohete';
+import { LanzaTrabajoControl } from './controller/lanza_trabajo';
 
 import env from './env';
 
@@ -38,11 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
     let config = new Config({ name: env.name })
     let contaplus_model = new ContaplusModel(config, env)
     let cohete_model = new CoheteModel(config, env)
+    let submit_model = new SubmitModel(contaplus_model, cohete_model)
     let login_cohete = new LoginCoheteControl(cohete_model)
     let ruta_contaplus = new RutaContaplusControl(contaplus_model)
-    let empresa_contaplus = new EmpresaContaplusControl(contaplus_model)
+    let empresa_contaplus = new EmpresaContaplusControl(submit_model)
     let ejercicios_contaplus = new EjerciciosContaplusControl(contaplus_model)
     let fuentes_contaplus = new FuentesContaplusControl(cohete_model)
+    let lanza_trabajo = new LanzaTrabajoControl(submit_model)
 
     // Enlazar eventos de login_cohete
     login_cohete.onSelected(() => { ruta_contaplus.Focus() })
@@ -73,10 +77,17 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     // Enlazar eventos de fuentes_contaplus
-    fuentes_contaplus.onSelected(() => { lanza_trabajos.Focus() })
-    fuentes_contaplus.onCleared(() => { lanza_trabajos.Blur(true) })
+    fuentes_contaplus.onSelected(() => { lanza_trabajo.Focus() })
+    fuentes_contaplus.onCleared(() => { lanza_trabajo.Blur(true) })
     fuentes_contaplus.onError((err) => {
         showErrorDialog("Error leyendo fuentes configurables", err)
+    })
+
+    // Enlazar eventos de lanza_trabajos
+    lanza_trabajo.onSelected(() => { })
+    lanza_trabajo.onCleared(() => { })
+    lanza_trabajo.onError((err) => {
+        showErrorDialog("Error ejecutando actualizacion de Contaplus", err)
     })
 
     login_cohete.Focus()

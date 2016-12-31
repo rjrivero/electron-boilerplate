@@ -10,20 +10,13 @@ export class FuentesContaplusControl extends CheckboxPanelControl {
         this.values = null
     }
 
-    // Returns an array with pairs (year, checked)
+    // Returns an array with triplets (year, checked, label)
     GetValues() {
         console.log("FuentesContaplus::GetValues")
-        return new Promise((resolve, reject) => {
-            resolve([
-                ["Balance", true],
-                ["Cuenta de resultados", true],
-                ["Cobros", true],
-                ["Compras", true],
-                ["Facturas", true]
-            ])
-        })
+        return this.model.ScanFuentesAvailable()
     }
 
     SetValues(checked) {
+        this.model.SetFuentesSelected(checked)
     }
 }

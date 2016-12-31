@@ -72,12 +72,14 @@ export class CheckboxPanelControl extends PanelControl {
         // Then, populate them with values
         let self = this
         this.GetValues().then((values) => {
+            // Each value is an array with three entries:
+            // value, checked, and label.
             self.cachedValues = values.slice(0, 10)
             self.iterateChecks((index, line, box, span) => {
                 line.removeClass("hidden")
                 box.prop("disabled", false)
                 box.prop("checked", values[index][1])
-                span[0].innerHTML = values[index][0]
+                span[0].innerHTML = values[index][2]
             })
             self.HideSpinner()
             self.triggerSelected()
@@ -92,14 +94,13 @@ export class CheckboxPanelControl extends PanelControl {
     triggerSelected() {
         let cachedValues = this.cachedValues
         let self = this
+        let values = new Array()
         this.iterateChecks((index, line, box, span) => {
-            let values = new Array()
-            let checked = box.prop("checked")
-            if (checked) {
+            if (box.prop("checked")) {
                 values.push(cachedValues[index])
             }
-            self.SetValues(values)
         })
+        this.SetValues(values)
         super.triggerSelected()
     }
 }

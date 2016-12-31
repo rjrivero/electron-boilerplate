@@ -94,7 +94,34 @@ export class CoheteModel {
     }
 
     SetToken(token) {
-        console.log("CoheteModel::SetToken")
         this.config.set("token", token)
+    }
+
+    ScanFuentesAvailable() {
+        console.log("CoheteModel::ScanFuentes")
+        return new Promise((resolve, reject) => {
+            let result = [
+                ["balance", true, "Balance"],
+                ["pyg", true, "Cuenta de resultados"],
+                ["cobros", true, "Cobros"],
+                ["compras", true, "Compras"],
+                ["facturas", true, "Facturas"]
+            ]
+            this.fuentes = result
+            resolve(result)
+        })
+    }
+
+    SetFuentesSelected(fuentes) {
+        console.log("CoheteModel::SetFuentesSelected (" + fuentes + ")")
+        this.fuentes_selected = fuentes
+    }
+
+    GetFuentesSelected(fuentes) {
+        console.log("CoheteModel::GetFuentesSelected")
+        if (this.fuentes_selected === undefined) {
+            this.fuentes_selected = new Array()
+        }
+        return this.fuentes_selected
     }
 }

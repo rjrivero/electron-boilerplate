@@ -17,11 +17,11 @@ import env from './env';
 var mainWindow;
 
 var setApplicationMenu = function () {
-    var menus = [editMenuTemplate];
     if (env.name !== 'production') {
+        var menus = [editMenuTemplate];
         menus.push(devMenuTemplate);
+        Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
     }
-    Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
 };
 
 // Save userData in separate folders for each environment.
@@ -36,8 +36,11 @@ app.on('ready', function () {
     setApplicationMenu();
 
     var mainWindow = createWindow('main', {
-        width: 1000,
-        height: 600
+        width: 900,
+        height: 600,
+        minWidth: env.window_min_width,
+        maxWidth: env.window_max_width,
+        minHeight: 200
     });
 
     mainWindow.loadURL(url.format({

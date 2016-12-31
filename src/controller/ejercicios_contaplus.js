@@ -14,35 +14,11 @@ export class EjerciciosContaplusControl extends CheckboxPanelControl {
     GetValues() {
         console.log("EjerciciosContaplus::GetValues")
         return new Promise((resolve, reject) => {
-            let result = new Array()
-            let companies = this.model.GetCompanies()
-            let company = this.model.GetCompany()
-            if (companies && company) {
-                let current = companies.get(company)
-                if (current) {
-                    let years = new Array()
-                    for (let [year, code] of current) {
-                        years.push(year)
-                    }
-                    // sort descending
-                    years.sort((a, b) => {
-                        return ((a < b) ? 1 : ((a > b) ? -1 : 0))
-                    })
-                    // Ony check the first one by default
-                    let checked = true
-                    for (let year of years) {
-                        result.push([year, checked])
-                        checked = false
-                    }
-                }
-            }
-            this.values = result
-            console.log("EjerciciosContaplus::GetValues: result = " + result)
-            resolve(result)
+            resolve(this.model.GetYearsAvailable())
         })
     }
 
     SetValues(checked) {
-        this.model.SetYears(checked)
+        this.model.SetYearsSelected(checked)
     }
 }
