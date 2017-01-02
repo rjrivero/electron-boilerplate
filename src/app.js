@@ -9,20 +9,24 @@ import Config from 'electron-config';
 import env from './env';
 console.log('Loaded environment variables:', env);
 
+// Models
+import { ContaplusModel } from './model/contaplus';
+import { CoheteModel } from './model/cohete';
+
+// Decorators
+import { CredencialesUsuario } from './decorator/credenciales_usuario';
+import { RutaContaplus } from './decorator/ruta_contaplus';
+import { EmpresaContaplus } from './decorator/empresa_contaplus';
+import { EjerciciosContaplus } from './decorator/ejercicios_contaplus';
+//import { FuentesContaplus } from './decorator/fuentes_contaplus';
+import { LanzaTrabajo } from './decorator/lanza_trabajo';
+
+//Controls
 import { bindToggles, showErrorDialog } from './controller/panel_tools';
 import { CheckboxPanel } from './controller/panel_checkbox';
 import { LoginPanel } from './controller/panel_login';
 import { SelectorPanel } from './controller/panel_selector';
 import { SubmitPanel } from './controller/panel_submit';
-import { ContaplusModel } from './model/contaplus';
-import { CoheteModel } from './model/cohete';
-
-import { CredencialesUsuario } from './controller/control_credenciales_usuario';
-import { RutaContaplus } from './controller/control_ruta_contaplus';
-import { EmpresaContaplus } from './controller/control_empresa_contaplus';
-import { EjerciciosContaplus } from './controller/control_ejercicios_contaplus';
-//import { FuentesContaplus } from './controller/control_fuentes_contaplus';
-import { LanzaTrabajo } from './controller/control_lanza_trabajo';
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());

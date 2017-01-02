@@ -48,18 +48,18 @@
             <div id="credenciales_usuario_body" class="panel-body hidden">
                 <div><form class="form-horizontal">
                     <div class="form-group">
-                        <label class="control-label col-sm-3" for="credenciales_usuario_username">Dirección de correo:</label>
-                        <div class="col-sm-9"><input type="email" class="form-control" id="credenciales_usuario_username" disabled/></div>
+                        <label class="control-label col-xs-3" for="credenciales_usuario_username">Dirección de correo:</label>
+                        <div class="col-xs-9"><input type="email" class="form-control" id="credenciales_usuario_username" disabled/></div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-3" for="credenciales_usuario_password">Contraseña:</label>
-                        <div class="col-sm-9"><input type="password" class="form-control" id="credenciales_usuario_password" disabled/></div>
+                        <label class="control-label col-xs-3" for="credenciales_usuario_password">Contraseña:</label>
+                        <div class="col-xs-9"><input type="password" class="form-control" id="credenciales_usuario_password" disabled/></div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12"><a href="https://devel.smartbi.es/" class="js-external-link pull-right">¿Olvidó su contraseña?</a></div>
+                        <div class="col-xs-12"><a href="https://devel.smartbi.es/" class="js-external-link pull-right">¿Olvidó su contraseña?</a></div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12"><button type="submit" class="btn disabled" disabled  id="credenciales_usuario_apply">Continuar</button></div>
+                        <div class="col-xs-12"><button type="submit" class="btn disabled" disabled  id="credenciales_usuario_apply">Continuar</button></div>
                     </div>
                 </form></div>
                 <div id="credenciales_usuario_spinner" class="overlay hidden">
@@ -79,11 +79,11 @@
             <div id="ruta_contaplus_body" class="panel-body hidden">
                 <div><form class="form-horizontal">
                     <div class="form-group">
-                        <label class="control-label col-sm-3" for="ruta_contaplus_select">Ruta de instalación:</label>
-                        <div class="col-sm-9"><select class="form-control" id="ruta_contaplus_select" disabled></select></div>
+                        <label class="control-label col-xs-3" for="ruta_contaplus_select">Ruta de instalación:</label>
+                        <div class="col-xs-9"><select class="form-control" id="ruta_contaplus_select" disabled></select></div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12"><div class="btn-group">
+                        <div class="col-xs-12"><div class="btn-group">
                             <button type="submit" class="btn disabled" disabled id="ruta_contaplus_search">Refrescar</button>
                             <button type="submit" class="btn disabled" disabled id="ruta_contaplus_apply">Continuar</button>
                         </div></div>
@@ -104,12 +104,12 @@
             <div id="empresa_contaplus_body" class="panel-body hidden">
                 <div><form class="form-horizontal">
                     <div class="form-group">
-                        <label class="control-label col-sm-3" for="empresa_contaplus_select">Empresa seleccionada:</label>
-                        <div class="col-sm-9"><select class="form-control" id="empresa_contaplus_select" disabled>
+                        <label class="control-label col-xs-3" for="empresa_contaplus_select">Empresa seleccionada:</label>
+                        <div class="col-xs-9"><select class="form-control" id="empresa_contaplus_select" disabled>
                         </select></div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12"><div class="btn-group">
+                        <div class="col-xs-12"><div class="btn-group">
                             <button type="submit" class="btn disabled" disabled id="empresa_contaplus_search">Refrescar</button>
                             <button type="submit" class="btn disabled" disabled id="empresa_contaplus_apply">Continuar</button>
                         </div></div>
@@ -140,7 +140,10 @@
                     <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_8"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_8" disabled/><span id="ejercicios_contaplus_label_8"/></label></div></div>
                     <div class="form-group col-xs-6 col-sm-3  hidden" id="ejercicios_contaplus_line_9"><div class="checkbox"><label><input type="checkbox" id="ejercicios_contaplus_check_9" disabled/><span id="ejercicios_contaplus_label_9"/></label></div></div>
                     <div class="form-group col-xs-12">
-                        <button type="submit" class="btn disabled" disabled id="ejercicios_contaplus_apply">Continuar</button>
+                        <div class="col-xs-12"><div class="btn-group">
+                            <button type="submit" class="btn disabled" disabled id="ejercicios_contaplus_search">Refrescar</button>
+                            <button type="submit" class="btn disabled" disabled id="ejercicios_contaplus_apply">Continuar</button>
+                        </div></div>
                     </div>
                 </form>
                 <div id="ejercicios_contaplus_spinner" class="overlay hidden">

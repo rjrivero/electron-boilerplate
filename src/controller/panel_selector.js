@@ -21,7 +21,6 @@ export class SelectorPanel extends Panel {
             event.preventDefault()
             self.populateSelector(true)
         })
-
     }
 
     Focus() {

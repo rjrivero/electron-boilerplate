@@ -1,3 +1,4 @@
+import { enableButton } from './panel_tools'
 import { Panel } from './panel'
 
 /*
@@ -7,6 +8,7 @@ export class CheckboxPanel extends Panel {
 
     constructor(prefix, model) {
         super(prefix, model)
+        this.search = $("#" + prefix + "_search")
         this.lines = new Array()
         this.boxes = new Array()
         this.spans = new Array()
@@ -15,12 +17,20 @@ export class CheckboxPanel extends Panel {
             this.boxes[i] = $("#" + prefix + "_check_" + i)
             this.spans[i] = $("#" + prefix + "_label_" + i)
         }
+        // Activate search button
+        let self = this
+        this.search.off().on("click", (event) => {
+            event.preventDefault()
+            self.populateChecks(true)
+        })
     }
 
     Focus() {
         super.Focus()
+        // Enable search button
+        enableButton(this.search)
         // Populate the selector.
-        this.populateChecks()
+        this.populateChecks(false)
     }
 
     Blur(propagate) {
@@ -82,7 +92,9 @@ export class CheckboxPanel extends Panel {
                 span[0].innerHTML = values[index][2]
             })
             self.hideSpinner()
-            self.triggerSelected()
+            if (!refresh) {
+                self.triggerSelected()
+            }
         })
         .catch((err) => {
             self.hideSpinner()
