@@ -1,9 +1,9 @@
-import { PanelControl } from './panel'
+import { Panel } from './panel'
 
 /*
  Configuration panel with a login form
  */
-export class CheckboxPanelControl extends PanelControl {
+export class CheckboxPanel extends Panel {
 
     constructor(model, prefix) {
         super(model, prefix)
@@ -65,13 +65,13 @@ export class CheckboxPanelControl extends PanelControl {
     // Populates the input select
     populateChecks() {
         console.log(this.prefix + "::populateChecks")
-        this.ShowSpinner()
+        this.showSpinner()
         // First, hide all checkboxes
         this.cachedValues = null
         this.disableChecks()
         // Then, populate them with values
         let self = this
-        this.GetValues().then((values) => {
+        this.scanValues().then((values) => {
             // Each value is an array with three entries:
             // value, checked, and label.
             self.cachedValues = values.slice(0, 10)
@@ -81,11 +81,11 @@ export class CheckboxPanelControl extends PanelControl {
                 box.prop("checked", values[index][1])
                 span[0].innerHTML = values[index][2]
             })
-            self.HideSpinner()
+            self.hideSpinner()
             self.triggerSelected()
         })
         .catch((err) => {
-            self.HideSpinner()
+            self.hideSpinner()
             self.triggerError(err)
         })
     }
@@ -100,7 +100,7 @@ export class CheckboxPanelControl extends PanelControl {
                 values.push(cachedValues[index])
             }
         })
-        this.SetValues(values)
+        this.setSelected(values)
         super.triggerSelected()
     }
 }

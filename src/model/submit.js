@@ -6,22 +6,6 @@ export class SubmitModel {
         this.selectors = new Map()
         let selectors = this.selectors
         let self = this
-        // Selectores para todos los campos necesarios
-        selectors.set("usuario", () => {
-            return cohete.GetEmail()
-        })
-        selectors.set("ruta", () => {
-            return contaplus.GetFolder()
-        })
-        selectors.set("empresa", () => {
-            return contaplus.GetCompany()
-        })
-        selectors.set("ejercicios", () => {
-            return self.joinField(contaplus.GetYearsSelected(), 0)
-        })
-        selectors.set("fuentes", () => {
-            return self.joinField(cohete.GetFuentesSelected(), 2)
-        })
     }
 
     joinField(items, index) {
@@ -32,18 +16,20 @@ export class SubmitModel {
         return result.join(", ")
     }
 
-    GetAttributes() {
-        console.log("SubmitModel::GetAttributes")
-        return Array.from(this.selectors.keys())
+    getSelected() {
+        // Todos los valores seleccionados!
+        let result = new Map()
+        let contaplus = this.contaplus
+        let cohete = this.cohete
+        result.set("usuario", cohete.GetEmail())
+        result.set("ruta", contaplus.GetFolder())
+        result.set("empresa", contaplus.GetCompany())
+        result.set("ejercicios", this.joinField(contaplus.GetSelectedYears(), 0))
+        result.set("fuentes", this.joinField(cohete.GetSelectedSources(), 2))
+        return result
     }
 
-    GetValue(value) {
-        console.log("SubmitModel::GetValue(" + value + ")")
-        let selector = this.selectors.get(value)
-        return (selector ? selector() : null)
-    }
-
-    Submit(callback) {
+    submit(callback) {
         console.log("SubmitModel::Submit")
         return new Promise((resolve, reject) => {
             let progress = 0

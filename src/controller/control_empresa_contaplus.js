@@ -1,18 +1,18 @@
-import { SelectorPanelControl } from './selector_panel'
+import { SelectorPanel } from './panel_selector'
 
-export class EmpresaContaplusControl extends SelectorPanelControl {
+export class EmpresaContaplusControl extends SelectorPanel {
 
     constructor(model) {
         super(model, "empresa_contaplus")
     }
 
     // Set cached value to model
-    setValue(selected) {
+    setSelected(selected) {
         this.model.SetCompany(selected)
     }
 
     // Get cached value from model
-    getValue(selected) {
+    getSelected(selected) {
         return this.model.GetCompany()
     }
 

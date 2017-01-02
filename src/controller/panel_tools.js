@@ -69,18 +69,6 @@ function bindToggle(toggle, bodies) {
     return targets
 }
 
-// Force show, toggling with parent. See
-// http://stackoverflow.com/questions/17750907/
-export function showAsistente(item) {
-    console.log("tools::showAsistente [" + item.attr("class") + "]")
-    item.removeClass("hidden")
-}
-
-export function hideAsistente(item) {
-    console.log("tools::hideAsistente [" + item.attr("class") + "]")
-    item.addClass("hidden")
-}
-
 export function disableButton(item) {
     switchClass(item, "btn.-*", "btn-default disabled")
     item.prop("disabled", "disabled")

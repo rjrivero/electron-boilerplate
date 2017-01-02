@@ -1,9 +1,9 @@
-import { CheckboxPanelControl } from './checkbox_panel'
+import { CheckboxPanel } from './panel_checkbox'
 
 /*
  Configuration panel with a login form
  */
-export class FuentesContaplusControl extends CheckboxPanelControl {
+export class FuentesContaplusControl extends CheckboxPanel {
 
     constructor(model) {
         super(model, "fuentes_contaplus")
@@ -11,12 +11,12 @@ export class FuentesContaplusControl extends CheckboxPanelControl {
     }
 
     // Returns an array with triplets (year, checked, label)
-    GetValues() {
+    scanValues() {
         console.log("FuentesContaplus::GetValues")
-        return this.model.ScanFuentesAvailable()
+        return this.model.ScanAvailableSources()
     }
 
-    SetValues(checked) {
-        this.model.SetFuentesSelected(checked)
+    setSelected(checked) {
+        this.model.SetSelectedSources(checked)
     }
 }

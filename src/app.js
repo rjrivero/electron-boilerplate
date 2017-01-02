@@ -6,16 +6,16 @@ import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
 import Config from 'electron-config';
 
-import { bindToggles, showErrorDialog } from './controller/tools';
+import { bindToggles, showErrorDialog } from './controller/panel_tools';
 import { ContaplusModel } from './model/contaplus';
 import { CoheteModel } from './model/cohete';
 import { SubmitModel } from './model/submit';
-import { RutaContaplusControl } from './controller/ruta_contaplus';
-import { EmpresaContaplusControl } from './controller/empresa_contaplus';
-import { EjerciciosContaplusControl } from './controller/ejercicios_contaplus';
-import { FuentesContaplusControl } from './controller/fuentes_contaplus';
-import { LoginCoheteControl } from './controller/login_cohete';
-import { LanzaTrabajoControl } from './controller/lanza_trabajo';
+import { RutaContaplusControl } from './controller/control_ruta_contaplus';
+import { EmpresaContaplusControl } from './controller/control_empresa_contaplus';
+import { EjerciciosContaplusControl } from './controller/control_ejercicios_contaplus';
+import { FuentesContaplusControl } from './controller/control_fuentes_contaplus';
+import { LoginCoheteControl } from './controller/control_login_cohete';
+import { LanzaTrabajoControl } from './controller/control_lanza_trabajo';
 
 import env from './env';
 

@@ -1,9 +1,9 @@
-import { LoginPanelControl } from './login_panel'
+import { LoginPanel } from './panel_login'
 
 /*
  Configuration panel with a login form
  */
-export class LoginCoheteControl extends LoginPanelControl {
+export class LoginCoheteControl extends LoginPanel {
 
     constructor(model) {
         super(model, "credenciales_usuario")
@@ -13,16 +13,16 @@ export class LoginCoheteControl extends LoginPanelControl {
         return this.username.val()
     }
 
-    GetCredentials() {
+    getCredentials() {
         return { email: this.model.GetEmail() }
     }
 
-    CheckCredentials(email, pass) {
+    checkCredentials(email, pass) {
         let self = this
         return new Promise((resolve, reject) => {
             if (!pass) {
                 // If not password, test if we have cached credentials
-                if (email != this.GetCredentials().email) {
+                if (email != this.getCredentials().email) {
                     reject("Debe introducir nombre de usuario (email) y contraseña")
                 } else {
                     // Todo: comprobar que tenemos credenciales cacheadas.

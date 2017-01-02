@@ -191,7 +191,7 @@ export class ContaplusModel {
     }
 
     // Returns an array with triples (year, checked, label)
-    GetYearsAvailable() {
+    GetAvailableYears() {
         console.log("ContaplusModel::GetYearsAvailable")
         let result = new Array()
         let companies = this.GetCompanies()
@@ -216,13 +216,13 @@ export class ContaplusModel {
     }
 
     // Sets the selected years
-    SetYearsSelected(years) {
+    SetSelectedYears(years) {
         console.log("ContaplusModel::SetYearsSelected (" + years + ")")
         this.years_selected = years
     }
 
     // Gets the selected years
-    GetYearsSelected() {
+    GetSelectedYears() {
         console.log("ContaplusModel::GetYearsSelected")
         if (this.years_selected === undefined) {
             this.years_selected = new Array()

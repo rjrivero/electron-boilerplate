@@ -97,8 +97,8 @@ export class CoheteModel {
         this.config.set("token", token)
     }
 
-    ScanFuentesAvailable() {
-        console.log("CoheteModel::ScanFuentes")
+    ScanAvailableSources() {
+        console.log("CoheteModel::ScanAvailableSources")
         return new Promise((resolve, reject) => {
             let result = [
                 ["balance", true, "Balance"],
@@ -112,13 +112,13 @@ export class CoheteModel {
         })
     }
 
-    SetFuentesSelected(fuentes) {
-        console.log("CoheteModel::SetFuentesSelected (" + fuentes + ")")
+    SetSelectedSources(fuentes) {
+        console.log("CoheteModel::SetSelectedSources (" + fuentes + ")")
         this.fuentes_selected = fuentes
     }
 
-    GetFuentesSelected(fuentes) {
-        console.log("CoheteModel::GetFuentesSelected")
+    GetSelectedSources(fuentes) {
+        console.log("CoheteModel::GetSelectedSources")
         if (this.fuentes_selected === undefined) {
             this.fuentes_selected = new Array()
         }

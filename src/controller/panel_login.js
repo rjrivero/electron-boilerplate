@@ -1,9 +1,9 @@
-import { PanelControl } from './panel'
+import { Panel } from './panel'
 
 /*
  Configuration panel with a login form
  */
-export class LoginPanelControl extends PanelControl {
+export class LoginPanel extends Panel {
 
     constructor(model, prefix) {
         super(model, prefix)
@@ -51,16 +51,16 @@ export class LoginPanelControl extends PanelControl {
         let self  = this
         let email = this.username.val()
         let pass  = this.password.val()
-        self.ShowSpinner()
-        self.CheckCredentials(email, pass)
+        self.showSpinner()
+        self.checkCredentials(email, pass)
         .then((cached) => {
-            self.HideSpinner()
+            self.hideSpinner()
             if (cached) {
                 super.triggerSelected()
             }
         })
         .catch((err) => {
-            self.HideSpinner()
+            self.hideSpinner()
             self.triggerError(err)
         })
     }
@@ -71,7 +71,7 @@ export class LoginPanelControl extends PanelControl {
         let username = this.username
         let password = this.password
         let model = this.model
-        let cred  = this.GetCredentials()
+        let cred  = this.getCredentials()
         if (cred.email) {
             username.val(cred.email)
             this.updateApply()

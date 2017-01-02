@@ -1,10 +1,10 @@
-import { switchClass, disableButton, enableButton, hideAsistente, showAsistente } from './tools'
-import { PanelControl } from './panel'
+import { enableButton } from './panel_tools'
+import { Panel } from './panel'
 
 /*
  Configuration panel with an item selector
  */
-export class SelectorPanelControl extends PanelControl{
+export class SelectorPanel extends Panel {
 
     constructor(model, prefix) {
         super(model, prefix)
@@ -55,7 +55,7 @@ export class SelectorPanelControl extends PanelControl{
     triggerSelected() {
         // Set the value before propagating. Otherwise, the next
         // panel will not have the value available.
-        this.setValue(this.select.val())
+        this.setSelected(this.select.val())
         super.triggerSelected()
     }
 
@@ -72,8 +72,8 @@ export class SelectorPanelControl extends PanelControl{
         this.disableSelector()
         // Get selected folder before rescanning. Otherwise,
         // "refresh = true" removes it.
-        let savedValue = this.getValue()
-        self.ShowSpinner()
+        let savedValue = this.getSelected()
+        self.showSpinner()
         self.scanValues(refresh).then((values) => {
             if (values.length > 0) {
                 // Check if there is some default value selectable
@@ -107,7 +107,7 @@ export class SelectorPanelControl extends PanelControl{
                 // Enable selector
                 this.select.prop("disabled", false)
             }
-            self.HideSpinner()
+            self.hideSpinner()
             // Callback _onSelected or _onCleared
             if (matched) {
                 // If manual refresh, require manual apply to trigger selected
@@ -116,7 +116,7 @@ export class SelectorPanelControl extends PanelControl{
                     self.triggerSelected()
                 } else {
                     // Keep consistent behaviour, even without triggering
-                    self.setValue(selected)
+                    self.setSelected(selected)
                 }
             }
             if (!matched || refresh) {
@@ -124,7 +124,7 @@ export class SelectorPanelControl extends PanelControl{
             }
         })
         .catch((err) => {
-            self.HideSpinner()
+            self.hideSpinner()
             // Call _onCleared and _onError
             if (self._onCleared) {
                 self._onCleared()

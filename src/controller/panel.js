@@ -1,29 +1,9 @@
-import { switchClass, disableButton, enableButton, hideAsistente, showAsistente } from './tools'
+import { switchClass, disableButton, enableButton } from './panel_tools'
 
 /*
  Basic configuration panel
  */
-export class PanelControl {
-
-    // Set a callback for when path is selected
-    onSelected(f) {
-        this._onSelected = f
-    }
-
-    // Set a callback for when selection is cleared
-    onCleared(f) {
-        this._onCleared = f
-    }
-
-    // Set a callback for errors
-    onError(f) {
-        this._onError = f
-    }
-
-    // True if we can enable the "Accept" button
-    canApply() {
-        return true
-    }
+export class Panel {
 
     constructor(model, prefix) {
         // Connect controller controls
@@ -51,7 +31,7 @@ export class PanelControl {
         // Give the focus style to the box
         switchClass(this.heading, "panel-.*", "panel-primary")
         // Show the panel body
-        showAsistente(this.body)
+        this.Show()
     }
 
     // Deactivate the control
@@ -60,10 +40,20 @@ export class PanelControl {
         // Give the plain style to the box
         switchClass(this.heading, "panel-.*", "panel-default")
         // Hide the body
-        hideAsistente(this.body)
+        this.Hide()
         if (propagate) {
             this.triggerCleared(propagate)
         }
+    }
+
+    // Show the panel body
+    Show() {
+        this.body.removeClass("hidden")
+    }
+
+    // Hide the Spinner layer
+    Hide() {
+        this.body.addClass("hidden")
     }
 
     // Update the state of the "apply" button
@@ -76,11 +66,16 @@ export class PanelControl {
         }
     }
 
+    // True if we can enable the "Accept" button
+    canApply() {
+        return true
+    }
+
     // Send the "selected" event
     triggerSelected() {
         console.log(this.prefix + "::triggerSelected")
         switchClass(this.heading, "panel-.*", "panel-success")
-        hideAsistente(this.body)
+        this.Hide()
         if (this._onSelected) {
             this._onSelected()
         }
@@ -106,13 +101,28 @@ export class PanelControl {
         }
     }
 
-    // show the Spinner layer
-    ShowSpinner() {
+    // Show the Spinner layer
+    showSpinner() {
         this.spinner.removeClass("hidden")
     }
 
-    // hide the Spinner layer
-    HideSpinner() {
+    // Hide the Spinner layer
+    hideSpinner() {
         this.spinner.addClass("hidden")
+    }
+
+    // Set a callback for when path is selected
+    onSelected(f) {
+        this._onSelected = f
+    }
+
+    // Set a callback for when selection is cleared
+    onCleared(f) {
+        this._onCleared = f
+    }
+
+    // Set a callback for errors
+    onError(f) {
+        this._onError = f
     }
 }
