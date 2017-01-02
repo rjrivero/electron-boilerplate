@@ -6,8 +6,8 @@ import { Panel } from './panel'
  */
 export class SelectorPanel extends Panel {
 
-    constructor(model, prefix) {
-        super(model, prefix)
+    constructor(prefix, model) {
+        super(prefix, model)
         this.select = $("#" + prefix + "_select")
         this.search = $("#" + prefix + "_search")
         // Apply, if selector has a value
@@ -43,7 +43,7 @@ export class SelectorPanel extends Panel {
     }
 
     disableSelector() {
-        console.log(this.prefix + "::disableSelector")
+        console.debug(this.prefix + "::disableSelector")
         // Disable selector
         let select = this.select
         select.prop("disabled", "disabled")
@@ -55,13 +55,13 @@ export class SelectorPanel extends Panel {
     triggerSelected() {
         // Set the value before propagating. Otherwise, the next
         // panel will not have the value available.
-        this.setSelected(this.select.val())
+        this.model.SetSelected(this.select.val())
         super.triggerSelected()
     }
 
     // Populates the input select
     populateSelector(refresh = false) {
-        console.log(this.prefix + "::populateSelector")
+        console.debug(this.prefix + "::populateSelector")
         let select = this.select
         let self = this
         let model = this.model
@@ -72,9 +72,9 @@ export class SelectorPanel extends Panel {
         this.disableSelector()
         // Get selected folder before rescanning. Otherwise,
         // "refresh = true" removes it.
-        let savedValue = this.getSelected()
+        let savedValue = this.model.GetSelected()
         self.showSpinner()
-        self.scanValues(refresh).then((values) => {
+        self.model.ScanValues(refresh).then((values) => {
             if (values.length > 0) {
                 // Check if there is some default value selectable
                 if (savedValue) {
@@ -116,7 +116,7 @@ export class SelectorPanel extends Panel {
                     self.triggerSelected()
                 } else {
                     // Keep consistent behaviour, even without triggering
-                    self.setSelected(selected)
+                    self.model.SetSelected(selected)
                 }
             }
             if (!matched || refresh) {

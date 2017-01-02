@@ -56,6 +56,10 @@ export class CoheteModel {
         return this.config.get("token")
     }
 
+    SetToken(token) {
+        this.config.set("token", token)
+    }
+
     // Check the token is still valid
     CheckToken() {
         console.log("CoheteModel::CheckToken")
@@ -93,12 +97,8 @@ export class CoheteModel {
         })
     }
 
-    SetToken(token) {
-        this.config.set("token", token)
-    }
-
-    ScanAvailableSources() {
-        console.log("CoheteModel::ScanAvailableSources")
+    ScanSources() {
+        console.log("CoheteModel::ScanSources")
         return new Promise((resolve, reject) => {
             let result = [
                 ["balance", true, "Balance"],
@@ -123,5 +123,23 @@ export class CoheteModel {
             this.fuentes_selected = new Array()
         }
         return this.fuentes_selected
+    }
+
+    SubmitContaplus(contaplus, callback) {
+        console.log("SubmitModel::Submit")
+        return new Promise((resolve, reject) => {
+            let progress = 0
+            function increment() {
+                callback(progress)
+                if (progress >= 100) {
+                    resolve("Todos los ficheros actualizados")
+                } else {
+                    progress += 5
+                    setTimeout(increment, 250)
+                }
+            }
+            setTimeout(increment, 250)
+            callback(progress)
+        })
     }
 }

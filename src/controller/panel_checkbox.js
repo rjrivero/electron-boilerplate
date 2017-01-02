@@ -5,8 +5,8 @@ import { Panel } from './panel'
  */
 export class CheckboxPanel extends Panel {
 
-    constructor(model, prefix) {
-        super(model, prefix)
+    constructor(prefix, model) {
+        super(prefix, model)
         this.lines = new Array()
         this.boxes = new Array()
         this.spans = new Array()
@@ -34,7 +34,7 @@ export class CheckboxPanel extends Panel {
     }
 
     iterateChecks(each) {
-        console.log(this.prefix + "::iterateChecks")
+        console.debug(this.prefix + "::iterateChecks")
         let lines = this.lines
         let boxes = this.boxes
         let spans = this.spans
@@ -54,7 +54,7 @@ export class CheckboxPanel extends Panel {
     }
 
     disableChecks() {
-        console.log(this.prefix + "::disableChecks")
+        console.debug(this.prefix + "::disableChecks")
         this.iterateChecks((index, line, box, span) => {
             line.addClass("hidden")
             box.prop("disabled", "disabled")
@@ -63,15 +63,15 @@ export class CheckboxPanel extends Panel {
     }
 
     // Populates the input select
-    populateChecks() {
-        console.log(this.prefix + "::populateChecks")
+    populateChecks(refresh = false) {
+        console.debug(this.prefix + "::populateChecks")
         this.showSpinner()
         // First, hide all checkboxes
         this.cachedValues = null
         this.disableChecks()
         // Then, populate them with values
         let self = this
-        this.scanValues().then((values) => {
+        this.model.ScanValues(refresh).then((values) => {
             // Each value is an array with three entries:
             // value, checked, and label.
             self.cachedValues = values.slice(0, 10)
@@ -100,7 +100,7 @@ export class CheckboxPanel extends Panel {
                 values.push(cachedValues[index])
             }
         })
-        this.setSelected(values)
+        this.model.SetSelected(values)
         super.triggerSelected()
     }
 }

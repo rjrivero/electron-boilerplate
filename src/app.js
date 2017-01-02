@@ -6,20 +6,23 @@ import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
 import Config from 'electron-config';
 
+import env from './env';
+console.log('Loaded environment variables:', env);
+
 import { bindToggles, showErrorDialog } from './controller/panel_tools';
+import { CheckboxPanel } from './controller/panel_checkbox';
+import { LoginPanel } from './controller/panel_login';
+import { SelectorPanel } from './controller/panel_selector';
+import { SubmitPanel } from './controller/panel_submit';
 import { ContaplusModel } from './model/contaplus';
 import { CoheteModel } from './model/cohete';
-import { SubmitModel } from './model/submit';
-import { RutaContaplusControl } from './controller/control_ruta_contaplus';
-import { EmpresaContaplusControl } from './controller/control_empresa_contaplus';
-import { EjerciciosContaplusControl } from './controller/control_ejercicios_contaplus';
-import { FuentesContaplusControl } from './controller/control_fuentes_contaplus';
-import { LoginCoheteControl } from './controller/control_login_cohete';
-import { LanzaTrabajoControl } from './controller/control_lanza_trabajo';
 
-import env from './env';
-
-console.log('Loaded environment variables:', env);
+import { CredencialesUsuario } from './controller/control_credenciales_usuario';
+import { RutaContaplus } from './controller/control_ruta_contaplus';
+import { EmpresaContaplus } from './controller/control_empresa_contaplus';
+import { EjerciciosContaplus } from './controller/control_ejercicios_contaplus';
+//import { FuentesContaplus } from './controller/control_fuentes_contaplus';
+import { LanzaTrabajo } from './controller/control_lanza_trabajo';
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
@@ -36,17 +39,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Activate the toggling of asistente
     bindToggles()
 
-    // Bind events from controllers
+    // Configuration and models
     let config = new Config({ name: env.name })
-    let contaplus_model = new ContaplusModel(config, env)
-    let cohete_model = new CoheteModel(config, env)
-    let submit_model = new SubmitModel(contaplus_model, cohete_model)
-    let login_cohete = new LoginCoheteControl(cohete_model)
-    let ruta_contaplus = new RutaContaplusControl(contaplus_model)
-    let empresa_contaplus = new EmpresaContaplusControl(submit_model)
-    let ejercicios_contaplus = new EjerciciosContaplusControl(contaplus_model)
-    let fuentes_contaplus = new FuentesContaplusControl(cohete_model)
-    let lanza_trabajo = new LanzaTrabajoControl(submit_model)
+    let contaplus = new ContaplusModel(config, env)
+    let cohete = new CoheteModel(config, env)
+
+    // Controllers
+    let login_cohete = new LoginPanel("credenciales_usuario",
+        new CredencialesUsuario(cohete))
+    let ruta_contaplus = new SelectorPanel("ruta_contaplus",
+        new RutaContaplus(contaplus))
+    let empresa_contaplus = new SelectorPanel("empresa_contaplus",
+        new EmpresaContaplus(contaplus))
+    let ejercicios_contaplus = new CheckboxPanel("ejercicios_contaplus",
+        new EjerciciosContaplus(contaplus))
+    //let fuentes_contaplus = new FuentesContaplus("fuentes_contaplus", cohete_model)
+    let lanza_trabajo = new SubmitPanel("lanza_trabajo",
+        new LanzaTrabajo(contaplus, cohete))
 
     // Enlazar eventos de login_cohete
     login_cohete.onSelected(() => { ruta_contaplus.Focus() })
@@ -70,18 +79,18 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     // Enlazar eventos de ejercicios_contaplus
-    ejercicios_contaplus.onSelected(() => { fuentes_contaplus.Focus() })
-    ejercicios_contaplus.onCleared(() => { fuentes_contaplus.Blur(true) })
+    ejercicios_contaplus.onSelected(() => { lanza_trabajo.Focus() })
+    ejercicios_contaplus.onCleared(() => { lanza_trabajo.Blur(true) })
     ejercicios_contaplus.onError((err) => {
         showErrorDialog("Error leyendo ejercicios disponibles", err)
     })
 
     // Enlazar eventos de fuentes_contaplus
-    fuentes_contaplus.onSelected(() => { lanza_trabajo.Focus() })
+    /*fuentes_contaplus.onSelected(() => { lanza_trabajo.Focus() })
     fuentes_contaplus.onCleared(() => { lanza_trabajo.Blur(true) })
     fuentes_contaplus.onError((err) => {
         showErrorDialog("Error leyendo fuentes configurables", err)
-    })
+    })*/
 
     // Enlazar eventos de lanza_trabajos
     lanza_trabajo.onSelected(() => { })

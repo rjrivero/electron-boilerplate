@@ -6,12 +6,12 @@ import { Panel } from './panel'
  */
 export class SubmitPanel extends Panel {
 
-    constructor(model, prefix) {
-        super(model, prefix)
+    constructor(prefix, model) {
+        super(prefix, model)
         this.progress = $("#" + prefix + "_progress")
         this.table = $("#" + prefix + "_table")
         this.bindings = new Map()
-        for (let entry of this.getSelected().keys()) {
+        for (let entry of this.model.GetSelected().keys()) {
             let span = $("#" + prefix + "_" + entry)
             if (span) {
                 span[0].innerHTML = ""
@@ -23,7 +23,7 @@ export class SubmitPanel extends Panel {
     Focus() {
         super.Focus()
         // Populate the table
-        let values = this.getSelected()
+        let values = this.model.GetSelected()
         for (let entry of this.bindings.entries()) {
             let key = entry[0]
             let span = entry[1]
@@ -45,9 +45,8 @@ export class SubmitPanel extends Panel {
 
     // Can apply if all values are available
     canApply() {
-        console.log("SubmitPanelControl::canApply")
-        for (let key of this.bindings.keys()) {
-            if (!this.getSelected(key)) {
+        for (let entry of this.model.GetSelected().entries()) {
+            if (!entry[1]) {
                 return false
             }
         }
@@ -58,7 +57,7 @@ export class SubmitPanel extends Panel {
     triggerSelected() {
         let self = this
         self.showSpinner()
-        self.submit(self.progress).then((msg) => {
+        self.model.Submit(self.progress).then((msg) => {
             self.hideSpinner()
             showDialog("success", "Actualizacion completada", msg)
         })

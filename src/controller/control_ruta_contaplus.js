@@ -1,24 +1,27 @@
-import { SelectorPanel } from './panel_selector'
+// Decorador para ruta_contaplus
 
-export class RutaContaplusControl extends SelectorPanel {
+export class RutaContaplus {
 
-    constructor(model) {
-        super(model, "ruta_contaplus")
+    constructor(contaplus) {
+        this.contaplus = contaplus
     }
 
     // Set cached value to model
-    setSelected(selected) {
-        this.model.SetFolder(selected)
+    SetSelected(selected) {
+        console.debug("RutaContaplus::SetSelected(" + selected + ")")
+        this.contaplus.SetSelectedFolder(selected)
     }
 
     // Get cached value from model
-    getSelected(selected) {
-        return this.model.GetFolder()
+    GetSelected() {
+        console.debug("RutaContaplus::GetSelected")
+        return this.contaplus.GetSelectedFolder()
     }
 
     // Turn the result from a model's scan to an option array
-    scanValues(refresh) {
-        return this.model.ScanFolders(refresh)
+    ScanValues(refresh = false) {
+        console.debug("RutaContaplus::ScanValues(" + refresh + ")")
+        return this.contaplus.ScanFolders(refresh)
         .then((values) => {
             if (!values || !values.length) {
                 throw new Error(

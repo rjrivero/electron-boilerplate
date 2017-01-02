@@ -5,8 +5,8 @@ import { Panel } from './panel'
  */
 export class LoginPanel extends Panel {
 
-    constructor(model, prefix) {
-        super(model, prefix)
+    constructor(prefix, model) {
+        super(prefix, model)
         this.username = $("#" + prefix + "_username")
         this.password = $("#" + prefix + "_password")
         let self = this
@@ -31,28 +31,31 @@ export class LoginPanel extends Panel {
     }
 
     enableForm() {
-        console.log(this.prefix + "::enableForm")
+        console.debug(this.prefix + "::enableForm")
         this.username.prop("disabled", false)
         this.password.prop("disabled", false)
     }
 
     disableForm() {
-        console.log(this.prefix + "::disableForm")
+        console.debug(this.prefix + "::disableForm")
         // Disable selector
         this.username.prop("disabled", "disabled")
         this.password.prop("disabled", "disabled")
         this.updateApply()
     }
 
+    canApply() {
+        return this.username.val()
+    }
+
     // Clicked on Apply: Check credentials and move forward.
     triggerSelected() {
-        console.log(this.prefix + "::triggerSelected (outer)")
         // Validate credentials before triggering...
         let self  = this
         let email = this.username.val()
         let pass  = this.password.val()
         self.showSpinner()
-        self.checkCredentials(email, pass)
+        self.model.CheckCredentials(email, pass)
         .then((cached) => {
             self.hideSpinner()
             if (cached) {
@@ -67,11 +70,10 @@ export class LoginPanel extends Panel {
 
     // Populates the input select
     populateForm() {
-        console.log(this.prefix + "::populateForm")
+        console.debug(this.prefix + "::populateForm")
         let username = this.username
         let password = this.password
-        let model = this.model
-        let cred  = this.getCredentials()
+        let cred  = this.model.GetCredentials()
         if (cred.email) {
             username.val(cred.email)
             this.updateApply()

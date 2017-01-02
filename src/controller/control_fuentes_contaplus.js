@@ -1,22 +1,24 @@
-import { CheckboxPanel } from './panel_checkbox'
+// Decorador para FuentesContaplus
 
-/*
- Configuration panel with a login form
- */
-export class FuentesContaplusControl extends CheckboxPanel {
+export class FuentesContaplus {
 
-    constructor(model) {
-        super(model, "fuentes_contaplus")
-        this.values = null
+    constructor(cohete) {
+        this.cohete = cohete
     }
 
     // Returns an array with triplets (year, checked, label)
-    scanValues() {
-        console.log("FuentesContaplus::GetValues")
-        return this.model.ScanAvailableSources()
+    ScanValues(refresh = false) {
+        console.debug("FuentesContaplus::ScanValues(" + refresh + ")")
+        return this.cohete.ScanSources()
     }
 
-    setSelected(checked) {
-        this.model.SetSelectedSources(checked)
+    SetSelected(checked) {
+        console.debug("FuentesContaplus::SetSelected(" + values + ")")
+        this.cohete.SetSelectedSources(checked)
+    }
+
+    GetSelected() {
+        console.debug("FuentesContaplus::SetSelected")
+        return this.cohete.GetSelectedSources()
     }
 }

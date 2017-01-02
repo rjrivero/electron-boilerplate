@@ -5,9 +5,9 @@ import { switchClass, disableButton, enableButton } from './panel_tools'
  */
 export class Panel {
 
-    constructor(model, prefix) {
+    constructor(prefix, model) {
         // Connect controller controls
-        console.log(prefix + "::constructor")
+        console.debug(prefix + "::constructor")
         this.prefix = prefix
         this.model = model
         this.heading = $("#" + prefix + "_heading")
@@ -27,7 +27,7 @@ export class Panel {
 
     // Activates the control, sets focus on the tab
     Focus() {
-        console.log(this.prefix + "::Focus")
+        console.debug(this.prefix + "::Focus")
         // Give the focus style to the box
         switchClass(this.heading, "panel-.*", "panel-primary")
         // Show the panel body
@@ -36,7 +36,7 @@ export class Panel {
 
     // Deactivate the control
     Blur(propagate = false) {
-        console.log(this.prefix + "::Blur(" + propagate + ")")
+        console.debug(this.prefix + "::Blur(" + propagate + ")")
         // Give the plain style to the box
         switchClass(this.heading, "panel-.*", "panel-default")
         // Hide the body
@@ -48,11 +48,13 @@ export class Panel {
 
     // Show the panel body
     Show() {
+        console.debug(this.prefix + "::Show")
         this.body.removeClass("hidden")
     }
 
     // Hide the Spinner layer
     Hide() {
+        console.debug(this.prefix + "::Hide")
         this.body.addClass("hidden")
     }
 
@@ -64,11 +66,6 @@ export class Panel {
         } else {
             disableButton(this.apply)
         }
-    }
-
-    // True if we can enable the "Accept" button
-    canApply() {
-        return true
     }
 
     // Send the "selected" event
@@ -103,11 +100,13 @@ export class Panel {
 
     // Show the Spinner layer
     showSpinner() {
+        console.debug(this.prefix + "::showSpinner")
         this.spinner.removeClass("hidden")
     }
 
     // Hide the Spinner layer
     hideSpinner() {
+        console.debug(this.prefix + "::hideSpinner")
         this.spinner.addClass("hidden")
     }
 
@@ -124,5 +123,10 @@ export class Panel {
     // Set a callback for errors
     onError(f) {
         this._onError = f
+    }
+
+    // True if we can enable the "Accept" button
+    canApply() {
+        return true
     }
 }

@@ -1,23 +1,24 @@
-import { CheckboxPanel } from './panel_checkbox'
+//  Decorador para EjerciciosContaplus
 
-/*
- Configuration panel with a login form
- */
-export class EjerciciosContaplusControl extends CheckboxPanel {
+export class EjerciciosContaplus {
 
-    constructor(model) {
-        super(model, "ejercicios_contaplus")
+    constructor(contaplus) {
+        this.contaplus = contaplus
     }
 
     // Returns an array with triplets (code, checked, label)
-    scanValues() {
-        console.log("EjerciciosContaplus::GetValues")
-        return new Promise((resolve, reject) => {
-            resolve(this.model.GetAvailableYears())
-        })
+    ScanValues(refresh = false) {
+        console.debug("EjerciciosContaplus::ScanValues(" + refresh + ")")
+        return this.contaplus.ScanYears(refresh)
     }
 
-    setSelected(checked) {
-        this.model.SetSelectedYears(checked)
+    SetSelected(selected) {
+        console.debug("EjerciciosContaplus::SetSelected(" + selected + ")")
+        this.contaplus.SetSelectedYears(selected)
+    }
+
+    GetSelected() {
+        console.debug("EjerciciosContaplus::GetSelected")
+        return this.contaplus.GetSelectedYears()
     }
 }

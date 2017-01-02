@@ -28,7 +28,7 @@ export class ContaplusModel {
             }
             // If refreshing folder discovery, remove caches
             if (refresh) {
-                this.SetFolder(null)
+                this.SetSelectedFolder(null)
             }
             // Enumerate drives
             drivelist.list((error, drives) => {
@@ -76,17 +76,17 @@ export class ContaplusModel {
     }
 
     // Gets the currentl selected folder
-    GetFolder() {
-        console.log("ContaplusModel::GetFolder")
+    GetSelectedFolder() {
+        console.log("ContaplusModel::GetSelectedFolder")
         return this.config.get("folder")
     }
 
     // Selects a new folder
-    SetFolder(folder) {
-        console.log("ContaplusModel::SetFolder(" + folder + ")")
+    SetSelectedFolder(folder) {
+        console.log("ContaplusModel::SetSelectedFolder(" + folder + ")")
         // Remove companies if folder is being changed or cleared
         let config = this.config
-        let currentFolder = this.GetFolder()
+        let currentFolder = this.GetSelectedFolder()
         if (!folder || (currentFolder && (folder != currentFolder))) {
             config.delete("companies")
         }
@@ -103,7 +103,7 @@ export class ContaplusModel {
         let self = this
         return new Promise((resolve, reject) => {
             let ended  = false
-            let folder = self.GetFolder()
+            let folder = self.GetSelectedFolder()
             if (!folder) {
                 console.log("ContaplusModel::ScanCompanies: no folder set")
                 reject("Contaplus Folder not set!")
@@ -111,7 +111,7 @@ export class ContaplusModel {
             }
             if (!refresh && config.has('companies')) {
                 // Build a Map (config-store saves an Array)
-                resolve(self.GetCompanies())
+                resolve(self.unpackCompanies())
                 return
             }
             try {
@@ -159,29 +159,15 @@ export class ContaplusModel {
         })
     }
 
-    // Gets a Map of company name => []years
-    GetCompanies() {
-        console.log("ContaplusModel::GetCompanies")
-        // Builds a Map (config-store saves an Array)
-        let companyArray = this.config.get('companies')
-        let companies = new Map()
-        if (companyArray) {
-            for (let entry of companyArray) {
-                companies.set(entry[0], entry[1])
-            }
-        }
-        return companies
-    }
-
     // Gets the currently selected folder
-    GetCompany() {
-        console.log("ContaplusModel::GetCompany")
+    GetSelectedCompany() {
+        console.log("ContaplusModel::GetSelectedCompany")
         return this.config.get("company")
     }
 
     // Selects a new folder
-    SetCompany(company) {
-        console.log("ContaplusModel::SetCompany(" + company + ")")
+    SetSelectedCompany(company) {
+        console.log("ContaplusModel::SetSelectedCompany(" + company + ")")
         // Remove companies if folder is being changed or cleared
         if (company) {
             this.config.set("company", company)
@@ -191,28 +177,32 @@ export class ContaplusModel {
     }
 
     // Returns an array with triples (year, checked, label)
-    GetAvailableYears() {
-        console.log("ContaplusModel::GetYearsAvailable")
-        let result = new Array()
-        let companies = this.GetCompanies()
-        let company = this.GetCompany()
-        if (companies && company) {
-            let current = companies.get(company)
-            if (current) {
-                let years = current.slice()
-                // sort descending
-                years.sort((a, b) => {
-                    return ((a[0] < b[0]) ? 1 : ((a[1] > b[1]) ? -1 : 0))
-                })
-                // Ony check the first one by default
-                let checked = true
-                for (let year of years) {
-                    result.push([year[0], checked, year[0] + " (Cód. " + year[1] + ")"])
-                    checked = false
+    ScanYears(refresh = false) {
+        console.log("ContaplusModel::ScanYears")
+        let self = this
+        return self.ScanCompanies(refresh).then((companies) => {
+            let result  = new Array()
+            if (companies) {
+                let company = this.GetSelectedCompany()
+                if (company) {
+                    let current = companies.get(company)
+                    if (current) {
+                        let years = current.slice()
+                        // sort descending
+                        years.sort((a, b) => {
+                            return ((a[0] < b[0]) ? 1 : ((a[1] > b[1]) ? -1 : 0))
+                        })
+                        // Ony check the first one by default
+                        let checked = true
+                        for (let year of years) {
+                            result.push([year, checked, year[0] + " (Cód. " + year[1] + ")"])
+                            checked = false
+                        }
+                    }
                 }
             }
-        }
-        return result
+            return result
+        })
     }
 
     // Sets the selected years
@@ -228,6 +218,20 @@ export class ContaplusModel {
             this.years_selected = new Array()
         }
         return this.years_selected
+    }
+
+    // Unpacks a Map of company name => []years
+    unpackCompanies() {
+        console.log("ContaplusModel::unpackCompanies")
+        // Builds a Map (config-store saves an Array)
+        let companyArray = this.config.get('companies')
+        let companies = new Map()
+        if (companyArray) {
+            for (let entry of companyArray) {
+                companies.set(entry[0], entry[1])
+            }
+        }
+        return companies
     }
 
     testFile(fileName, wantDir = true) {

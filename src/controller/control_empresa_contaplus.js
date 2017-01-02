@@ -1,29 +1,35 @@
-import { SelectorPanel } from './panel_selector'
+// Decorador para EmpresaContaplus
 
-export class EmpresaContaplusControl extends SelectorPanel {
+export class EmpresaContaplus {
 
-    constructor(model) {
-        super(model, "empresa_contaplus")
-    }
-
-    // Set cached value to model
-    setSelected(selected) {
-        this.model.SetCompany(selected)
-    }
-
-    // Get cached value from model
-    getSelected(selected) {
-        return this.model.GetCompany()
+    constructor(contaplus, cohete) {
+        this.contaplus = contaplus
+        this.cohete = cohete
     }
 
     // Turn the result from a model's scan to an option array
-    scanValues(refresh) {
-        return this.model.ScanCompanies(refresh).then((valueMap) => {
+    ScanValues(refresh = false) {
+        console.debug("EmpresaContaplus::ScanValues(" + refresh + ")")
+        let self = this
+        return self.contaplus.ScanCompanies(refresh).then((valueMap) => {
             if (!valueMap || !valueMap.size) {
                 throw new Error("No se encuentran empresas.\n"
                     + "Por favor, cree al menos una empresa en Contaplus.")
             }
+            // TODO: pasar las empresas por un endpoint.
             return Array.from(valueMap.keys())
         })
+    }
+
+    // Set cached value to model
+    SetSelected(selected) {
+        console.debug("EmpresaContaplus::SetSelected(" + selected + ")")
+        this.contaplus.SetSelectedCompany(selected)
+    }
+
+    // Get cached value from model
+    GetSelected() {
+        console.debug("EmpresaContaplus::GetSelected")
+        return this.contaplus.GetSelectedCompany()
     }
 }

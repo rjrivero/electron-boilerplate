@@ -1,32 +1,27 @@
-import { LoginPanel } from './panel_login'
+// Decorador para credenciales_usuario.
 
-/*
- Configuration panel with a login form
- */
-export class LoginCoheteControl extends LoginPanel {
+export class CredencialesUsuario {
 
-    constructor(model) {
-        super(model, "credenciales_usuario")
+    constructor(cohete) {
+        this.cohete = cohete
     }
 
-    canApply() {
-        return this.username.val()
+    GetCredentials() {
+        console.debug("LoginCohete::GetCredentials")
+        return { email: this.cohete.GetEmail() }
     }
 
-    getCredentials() {
-        return { email: this.model.GetEmail() }
-    }
-
-    checkCredentials(email, pass) {
+    CheckCredentials(email, pass) {
+        console.debug("LoginCohete::CheckCredentials(" + email + ")")
         let self = this
         return new Promise((resolve, reject) => {
             if (!pass) {
                 // If not password, test if we have cached credentials
-                if (email != this.getCredentials().email) {
+                if (email != self.GetCredentials().email) {
                     reject("Debe introducir nombre de usuario (email) y contraseña")
                 } else {
                     // Todo: comprobar que tenemos credenciales cacheadas.
-                    self.model.CheckToken().then((cached) => {
+                    self.cohete.CheckToken().then((cached) => {
                         resolve(cached)
                     })
                     .catch((err) => { reject(err)})
@@ -36,9 +31,9 @@ export class LoginCoheteControl extends LoginPanel {
                 self.triggerError("Debe introducir nombre de usuario (email) y contraseña")
             } else {
                 // Check credentials
-                self.model.CheckEmail(email, pass)
+                self.cohete.CheckEmail(email, pass)
                 .then(() => {
-                    return self.model.CheckToken()
+                    return self.cohete.CheckToken()
                 })
                 .then((cached) => {
                     resolve(cached)

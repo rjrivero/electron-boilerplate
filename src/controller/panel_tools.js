@@ -1,7 +1,7 @@
 // Removes any class that matches the given "pattern", and
 // adds the new classes given by "add"
 export function switchClass(item, pattern, add) {
-    console.log("tools::switchClass")
+    console.debug("tools::switchClass")
     // Turn input pattern into regexp array
     let toRemove = new Array()
     for (let regex of pattern.split(" ")) {
@@ -25,7 +25,7 @@ export function switchClass(item, pattern, add) {
 
 // Bind toggles so when one is shown, the others are hidden
 export function bindToggles() {
-    console.log("tools::toggleAsistente")
+    console.debug("tools::bindToggles")
     let bodies = new Array()
     $('a[data-toggle=hidden]').each((index, raw) => {
         let targets = bindToggle($(raw), bodies)
@@ -54,9 +54,9 @@ function bindToggle(toggle, bodies) {
             target.removeClass("hidden")
         })
         // Grab focus
-        if (!toggle.is(":focus")) {
-            toggle.focus()
-        }
+        //if (!toggle.is(":focus")) {
+        //    toggle.focus()
+        //}
     }
     // Bind expand function to a global toggle
     let expander = $("#expand_" + ids[0].substring(1))
