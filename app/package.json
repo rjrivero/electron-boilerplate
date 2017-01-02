@@ -1,0 +1,23 @@
+{
+    "name": "actualizadorSmartBI",
+    "productName": "Actualizador smartBI",
+    "description": "Actualizador de smartBI para extracción de datos de Contaplus",
+    "version": "0.0.1",
+    "author": "Five <actualizador.contaplus@fivecorporation.com>",
+    "copyright": "© 2017, Five S.L.",
+    "homepage": "http://fivecorporation.com",
+    "license": "MIT",
+    "dependencies": {
+        "drivelist": "^5.0.4",
+        "electron-config": "^0.2.1",
+        "fs-jetpack": "^0.10.2",
+        "jquery": "^1.12.4",
+        "node-dbf": "^0.2.1",
+        "unirest": "^0.5.1"
+    },
+    "config": {
+        "update": {
+            "url": "http://myapp.myerserver.com/update/"
+        }
+    }
+}

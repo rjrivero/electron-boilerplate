@@ -271,4 +271,13 @@ export class ContaplusModel {
             return (isFile ? test : null)
         })
     }
+
+    // Remove configuration
+    RemoveConfig() {
+        this.config.delete("folders")
+        this.config.delete("folder")
+        this.config.delete("companies")
+        this.config.delete("company")
+        delete(this.years_selected)
+    }
 }

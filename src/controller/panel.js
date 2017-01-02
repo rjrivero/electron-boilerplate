@@ -1,5 +1,11 @@
 import { switchClass, disableButton, enableButton } from './panel_tools'
 
+class ScanDecorator {
+
+    ScanValues(refresh = false) {}
+    GetValues() {}
+}
+
 /*
  Basic configuration panel
  */

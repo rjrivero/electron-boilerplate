@@ -5,6 +5,10 @@
   "window_min_width": 600,
   "window_max_width": 1920,
 
+  "start_on_boot": true,
+  "minimize_to_tray": true,
+  "auto_update": true,
+
   "url_credentials": "https://devel.smartbi.es/tenants/devel/api/token",
   "url_username": "subject",
   "url_password": "secret",

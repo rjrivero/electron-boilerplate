@@ -85,7 +85,7 @@ export class CoheteModel {
                     } else {
                         let err = "Error contactando con el servidor.\n" +
                             "Por favor compruebe sus credenciales y su conexión a Internet.\n"
-                        if (response.body.message) {
+                        if (response.body && response.body.message) {
                             err += "El servidor respondió: " + response.body.message
                         }
                         reject(err)
@@ -117,7 +117,7 @@ export class CoheteModel {
         this.fuentes_selected = fuentes
     }
 
-    GetSelectedSources(fuentes) {
+    GetSelectedSources() {
         console.log("CoheteModel::GetSelectedSources")
         if (this.fuentes_selected === undefined) {
             this.fuentes_selected = new Array()
@@ -141,5 +141,10 @@ export class CoheteModel {
             setTimeout(increment, 250)
             callback(progress)
         })
+    }
+
+    RemoveConfig() {
+        this.config.delete("email")
+        this.config.delete("token")
     }
 }

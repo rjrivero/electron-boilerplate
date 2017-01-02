@@ -18,17 +18,21 @@ export class CheckboxPanel extends Panel {
             this.spans[i] = $("#" + prefix + "_label_" + i)
         }
         // Activate search button
-        let self = this
-        this.search.off().on("click", (event) => {
-            event.preventDefault()
-            self.populateChecks(true)
-        })
+        if (this.search) {
+            let self = this
+            this.search.off().on("click", (event) => {
+                event.preventDefault()
+                self.populateChecks(true)
+            })
+        }
     }
 
     Focus() {
         super.Focus()
         // Enable search button
-        enableButton(this.search)
+        if (this.search) {
+            enableButton(this.search)
+        }
         // Populate the selector.
         this.populateChecks(false)
     }
@@ -70,6 +74,8 @@ export class CheckboxPanel extends Panel {
             box.prop("disabled", "disabled")
             span[0].innerHTML = ""
         })
+        // After iteration, remove cached values
+        delete(this.cachedValues)
     }
 
     // Populates the input select
@@ -109,6 +115,8 @@ export class CheckboxPanel extends Panel {
         let values = new Array()
         this.iterateChecks((index, line, box, span) => {
             if (box.prop("checked")) {
+                // Update the "selected" property
+                cachedValues[index][1] = true
                 values.push(cachedValues[index])
             }
         })

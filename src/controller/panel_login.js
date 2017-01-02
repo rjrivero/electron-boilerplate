@@ -59,6 +59,7 @@ export class LoginPanel extends Panel {
         .then((cached) => {
             self.hideSpinner()
             if (cached) {
+                self.password.val("")
                 super.triggerSelected()
             }
         })

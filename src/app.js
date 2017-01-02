@@ -12,6 +12,7 @@ console.log('Loaded environment variables:', env);
 // Models
 import { ContaplusModel } from './model/contaplus';
 import { CoheteModel } from './model/cohete';
+import { AjustesModel } from './model/ajustes';
 
 // Decorators
 import { CredencialesUsuario } from './decorator/credenciales_usuario';
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let config = new Config({ name: env.name })
     let contaplus = new ContaplusModel(config, env)
     let cohete = new CoheteModel(config, env)
+    let ajustes = new AjustesModel(config, env)
 
     // Controllers
     let login_cohete = new LoginPanel("credenciales_usuario",
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //let fuentes_contaplus = new FuentesContaplus("fuentes_contaplus", cohete_model)
     let lanza_trabajo = new SubmitPanel("lanza_trabajo",
         new LanzaTrabajo(contaplus, cohete))
+    let panel_ajustes = new CheckboxPanel("ajustes", ajustes)
 
     // Enlazar eventos de login_cohete
     login_cohete.onSelected(() => { ruta_contaplus.Focus() })
@@ -103,5 +106,31 @@ document.addEventListener('DOMContentLoaded', function () {
         showErrorDialog("Error ejecutando actualizacion de Contaplus", err)
     })
 
+    // Enlazar eventos del panel ajustes
+    panel_ajustes.onSelected(() => {
+        panel_ajustes.Show()
+        let ajustesMap = ajustes.GetSelectedAsMap()
+        console.debug("panel_ajustes::onSelected " + Array.from(ajustesMap.entries()))
+        if (ajustesMap.get("remove_config")) {
+            console.debug("panel_ajustes::onSelected:CLEARING CONFIG")
+            // Remove configs
+            cohete.RemoveConfig()
+            contaplus.RemoveConfig()
+            ajustes.RemoveConfig()
+            // Blur nodes, and focus login again
+            login_cohete.Blur(true)
+            panel_ajustes.Focus()
+            login_cohete.Focus()
+        }
+    })
+    panel_ajustes.onCleared(() => {
+        panel_ajustes.Show()
+    })
+    panel_ajustes.onError((err) => {
+        panel_ajustes.Show()
+        showErrorDialog("Error leyendo ajustes de la aplicación", err)
+    })
+
+    panel_ajustes.Focus()
     login_cohete.Focus()
 });

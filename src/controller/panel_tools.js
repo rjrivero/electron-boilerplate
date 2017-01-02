@@ -54,9 +54,9 @@ function bindToggle(toggle, bodies) {
             target.removeClass("hidden")
         })
         // Grab focus
-        //if (!toggle.is(":focus")) {
-        //    toggle.focus()
-        //}
+        if (!toggle.is(":focus")) {
+            toggle.focus()
+        }
     }
     // Bind expand function to a global toggle
     let expander = $("#expand_" + ids[0].substring(1))

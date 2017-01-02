@@ -211,9 +211,36 @@
     </div>
 
     <div class="tab-pane" id="tab_ajustes">
-        <h4 id="greet">Ajustes</h4>
-        <p>Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
-        You are in <strong id="env-name"></strong> environment.</p>
+        <!--<h4 id="greet">Ajustes</h4>-->
+
+        <!-- Ajustes -->
+        <div id="ajustes_heading" class="panel panel-default">
+            <div class="panel-heading"><!--<a href="#" data-toggle="hidden" data-parent="#tab_ajustes" data-target="#ajustes_body">-->Ajustes de la aplicación<!--</a>--></div>
+            <div id="ajustes_body" class="panel-body">
+                <form>
+                    <div class="form-group hidden" id="ajustes_line_0"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_0" disabled/><span id="ajustes_label_0"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_1"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_1" disabled/><span id="ajustes_label_1"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_2"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_2" disabled/><span id="ajustes_label_2"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_3"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_3" disabled/><span id="ajustes_label_3"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_4"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_4" disabled/><span id="ajustes_label_4"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_5"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_5" disabled/><span id="ajustes_label_5"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_6"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_6" disabled/><span id="ajustes_label_6"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_7"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_7" disabled/><span id="ajustes_label_7"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_8"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_8" disabled/><span id="ajustes_label_8"/></label></div></div>
+                    <div class="form-group hidden" id="ajustes_line_9"><div class="checkbox"><label><input type="checkbox" id="ajustes_check_9" disabled/><span id="ajustes_label_9"/></label></div></div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn disabled" disabled id="ajustes_apply">Continuar</button>
+                    </div>
+                </form>
+                <div id="ajustes_spinner" class="overlay hidden">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div><!-- tab content -->
