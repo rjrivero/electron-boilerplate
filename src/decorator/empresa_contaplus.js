@@ -1,5 +1,7 @@
 // Decorador para EmpresaContaplus
 
+import { FiltroContaplus } from './filtro_contaplus'
+
 export class EmpresaContaplus {
 
     constructor(contaplus, cohete) {
@@ -11,7 +13,9 @@ export class EmpresaContaplus {
     ScanValues(refresh = false) {
         console.debug("EmpresaContaplus::ScanValues(" + refresh + ")")
         let self = this
-        return self.contaplus.ScanCompanies(refresh).then((valueMap) => {
+        return self.contaplus.ScanCompanies(refresh,
+            FiltroContaplus(self.contaplus, self.cohete))
+        .then((valueMap) => {
             if (!valueMap || !valueMap.size) {
                 throw new Error("No se encuentran empresas.\n"
                     + "Por favor, cree al menos una empresa en Contaplus.")

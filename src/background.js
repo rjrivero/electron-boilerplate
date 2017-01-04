@@ -5,16 +5,18 @@
 
 import path from 'path';
 import url from 'url';
-import { app, Menu } from 'electron';
+import { app, Menu, Tray, nativeImage } from 'electron';
 import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import createWindow from './helpers/window';
+import { Settings } from './helpers/settings';
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
 import env from './env';
 
 var mainWindow;
+var settings;
 
 var setApplicationMenu = function () {
     if (env.name !== 'production') {
@@ -33,9 +35,10 @@ if (env.name !== 'production') {
 }
 
 app.on('ready', function () {
+
     setApplicationMenu();
 
-    var mainWindow = createWindow('main', {
+    mainWindow = createWindow('main', {
         width: 900,
         height: 600,
         minWidth: env.window_min_width,
@@ -52,6 +55,8 @@ app.on('ready', function () {
     if (env.name === 'development') {
         mainWindow.openDevTools();
     }
+
+    settings = new Settings(app, mainWindow, env);
 });
 
 app.on('window-all-closed', function () {

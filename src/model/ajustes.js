@@ -1,13 +1,19 @@
-import unirest from 'unirest';
+import { ipcRenderer } from 'electron'
+import unirest from 'unirest'
 
 export class AjustesModel {
 
     constructor(config, env) {
         this.config = config
         this.env = env
+        // Propagate settings
+        let self = this
+        self.ScanValues().then((options) => {
+            self.SetSelected(options)
+        })
     }
 
-    ScanValues() {
+    ScanValues(refresh = false) {
         console.log("AjustesModel::ScanValues")
         let self = this
         return new Promise((resolve, reject) => {
@@ -18,13 +24,13 @@ export class AjustesModel {
             let result = [
                 ["start_on_boot",
                     (start_on_boot === undefined) ? env.start_on_boot : start_on_boot,
-                    "Arrancar al iniciar sesión"],
+                    "Arrancar al iniciar sesión"]/*,
                 ["minimize_to_tray",
                     (minimize_to_tray === undefined) ? env.minimize_to_tray : minimize_to_tray,
                     "Mantener en la bandeja de tareas"],
                 ["auto_update",
                     (auto_update === undefined) ? env.auto_update : auto_update,
-                    "Actualizar automáticamente"]
+                    "Actualizar automáticamente"]*/
             ]
             if (self.env.name !== 'production') {
                 result.push(["remove_config",
@@ -38,7 +44,13 @@ export class AjustesModel {
 
     SetSelected(options) {
         console.log("AjustesModel::SetSelected (" + options + ")")
+        let optionMap = new Object()
+        // Propagate event to main thread
         this.options = options
+        for (let option of options) {
+            optionMap[option[0]] = option[1]
+        }
+        ipcRenderer.send("update-settings", optionMap)
     }
 
     GetSelected() {

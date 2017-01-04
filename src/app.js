@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let ruta_contaplus = new SelectorPanel("ruta_contaplus",
         new RutaContaplus(contaplus))
     let empresa_contaplus = new SelectorPanel("empresa_contaplus",
-        new EmpresaContaplus(contaplus))
+        new EmpresaContaplus(contaplus, cohete))
     let ejercicios_contaplus = new CheckboxPanel("ejercicios_contaplus",
-        new EjerciciosContaplus(contaplus))
+        new EjerciciosContaplus(contaplus, cohete))
     //let fuentes_contaplus = new FuentesContaplus("fuentes_contaplus", cohete_model)
     let lanza_trabajo = new SubmitPanel("lanza_trabajo",
         new LanzaTrabajo(contaplus, cohete))

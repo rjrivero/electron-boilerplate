@@ -17,7 +17,8 @@ export class LanzaTrabajo  {
         result.set("usuario", cohete.GetEmail())
         result.set("ruta", contaplus.GetSelectedFolder())
         result.set("empresa", contaplus.GetSelectedCompany())
-        result.set("ejercicios", this.joinField(contaplus.GetSelectedYears(), 0, 0))
+        result.set("ejercicios", this.joinField(
+            contaplus.GetSelectedYears(), 0, "years", 0))
         //result.set("fuentes", this.joinField(cohete.GetSelectedSources(), 2))
         return result
     }
