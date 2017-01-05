@@ -216,6 +216,7 @@ export class ContaplusModel {
                                 })
                                 companies.set(name, currentCompany)
                             }
+                            year = parseInt(year)
                             currentCompany.Push(year, cod)
                         }
                     })
