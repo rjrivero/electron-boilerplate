@@ -9,6 +9,7 @@
   "minimize_to_tray": true,
   "auto_update": true,
 
+  "max_file_size": 35000000,
   "url_credentials": "https://devel.smartbi.es/tenants/devel/api/token",
   "url_username": "subject",
   "url_password": "secret",

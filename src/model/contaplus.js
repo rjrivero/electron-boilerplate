@@ -22,7 +22,7 @@ export class ContaplusCompany {
 
     // Returns the intersection of this and other
     Intersect(other) {
-        console.debug("ContaplusCompany::Intersect (" + this + ") ^ (" + other + ")")
+        console.debug(`ContaplusCompany::Intersect (${this}, ${other})`)
         let result = new ContaplusCompany({ name: this.name })
         // My years and codes
         let theseYears = this.years
@@ -47,7 +47,7 @@ export class ContaplusCompany {
     // [ company(ContaplusCompany), checked(bool), label(string) ]
     // sorted by year (descending)
     Options() {
-        console.debug("ContaplusCompany::Options")
+        console.debug(`ContaplusCompany::Options`)
         let options = new Array()
         for (let i = 0; i < this.years.length; i++) {
             // Create a single-code Contaplus Company
@@ -74,6 +74,46 @@ export class ContaplusCompany {
     }
 }
 
+
+// File stats
+export class FileStats {
+
+    constructor(company, year, localFile, remoteFile) {
+        this.company = company
+        this.year = year
+        this.localFile = localFile
+        this.remoteFile = remoteFile
+        this.stats = null
+    }
+
+    // Returns a promise that fills the "stats" field.
+    Stats() {
+        console.debug(`ContaplusModel::FileStats(${this.localFile})`)
+        let self = this
+        return new Promise((resolve, reject) => {
+            fs.stat(self.localFile, (err, stats) => {
+                if (err) {
+                    if (err.code == "ENOENT") {
+                        // User-friendly error
+                        reject(`El fichero correspondiente a EMPRESA: "<b>${self.company}</b>", EJERCICIO: "<b>${self.year}</b>" (<i>${self.localFile}</i>), no existe.`)
+                    } else {
+                        reject(err)
+                    }
+                } else {
+                    self.stats = stats
+                    resolve(self)
+                }
+            })
+        })
+    }
+
+    toString() {
+        return JSON.stringify(this)
+    }
+}
+
+
+// Model for Contaplus functionality
 export class ContaplusModel {
 
     // config is an electron-config object
@@ -88,7 +128,7 @@ export class ContaplusModel {
      * - folders: Set of 'GrupoSP' folders
      */
     ScanFolders(refresh = false) {
-        console.log("ContaplusModel::ScanFolders(" + refresh + ")")
+        console.debug(`ContaplusModel::ScanFolders(${refresh})`)
         let config = this.config
         let self = this
         return new Promise((resolve, reject) => {
@@ -140,20 +180,20 @@ export class ContaplusModel {
             })
         })
         .then((folders) => {
-            console.log("ContaplusModel::scanFolders:result = " + folders)
+            console.log(`ContaplusModel::scanFolders:result = ${folders}`)
             return folders
         })
     }
 
     // Gets the currently selected folder
     GetSelectedFolder() {
-        console.log("ContaplusModel::GetSelectedFolder")
+        console.debug(`ContaplusModel::GetSelectedFolder`)
         return this.config.get("folder")
     }
 
     // Selects a new folder
     SetSelectedFolder(folder) {
-        console.log("ContaplusModel::SetSelectedFolder(" + folder + ")")
+        console.debug(`ContaplusModel::SetSelectedFolder(${folder})`)
         // Remove companies if folder is being changed or cleared
         let config = this.config
         let currentFolder = this.GetSelectedFolder()
@@ -172,13 +212,13 @@ export class ContaplusModel {
     // returns a promise filtering the set of available
     // companies, before saving them.
     ScanCompanies(refresh = false, filterCompanies = null) {
-        console.log("ContaplusModel::ScanCompanies("+ refresh + ")")
+        console.debug(`ContaplusModel::ScanCompanies(${refresh})`)
         let config = this.config
         let self = this
         return new Promise((resolve, reject) => {
             let folder = self.GetSelectedFolder()
             if (!folder) {
-                console.log("ContaplusModel::ScanCompanies: no folder set")
+                console.log(`ContaplusModel::ScanCompanies: no folder set`)
                 reject("Contaplus Folder not set!")
                 return
             }
@@ -247,17 +287,34 @@ export class ContaplusModel {
         })
     }
 
+    // Gets the currently selected folder
+    GetSelectedCompany() {
+        console.debug(`ContaplusModel::GetSelectedCompany`)
+        return this.config.get("company")
+    }
+
+    // Selects a new folder
+    SetSelectedCompany(company) {
+        console.debug(`ContaplusModel::SetSelectedCompany(${company})`)
+        // Remove companies if folder is being changed or cleared
+        if (company) {
+            this.config.set("company", company)
+        } else {
+            this.config.delete("company")
+        }
+    }
+
     // Turn a companies map to a JSON object, an array
     // of entries with { name: "", years: [], codes: [] }
     CompaniesToJSON(companies) {
-        console.log("ContaplusModel::CompaniesToJSON")
+        console.debug(`ContaplusModel::CompaniesToJSON(${companies})`)
         return this.packCompanies(companies)
     }
 
     // Filters a Company map using a JSON object
     // in the format { name: "", years: [], codes: [] }
     JSONToCompanies(originalCompanies, jsonData) {
-        console.log("ContaplusModel::JSONToCompanies")
+        console.debug(`ContaplusModel::JSONToCompanies(${originalCompanies}, ${jsonData})`)
         let companies = new Map()
         for (let other of jsonData) {
             let original = originalCompanies.get(item.name)
@@ -271,26 +328,9 @@ export class ContaplusModel {
         return companies
     }
 
-    // Gets the currently selected folder
-    GetSelectedCompany() {
-        console.log("ContaplusModel::GetSelectedCompany")
-        return this.config.get("company")
-    }
-
-    // Selects a new folder
-    SetSelectedCompany(company) {
-        console.log("ContaplusModel::SetSelectedCompany(" + company + ")")
-        // Remove companies if folder is being changed or cleared
-        if (company) {
-            this.config.set("company", company)
-        } else {
-            this.config.delete("company")
-        }
-    }
-
     // Returns an array with triples (year, checked, label)
     ScanYears(refresh = false, filterCompanies = null) {
-        console.log("ContaplusModel::ScanYears(" + refresh + ")")
+        console.debug(`ContaplusModel::ScanYears(${refresh})`)
         let self = this
         return self.ScanCompanies(refresh, filterCompanies)
         .then((companies) => {
@@ -302,6 +342,8 @@ export class ContaplusModel {
                     if (current) {
                         result = current.Options()
                         if (result.length) {
+                            // Only set as selected, by default, the first
+                            // option (most recent year)
                             result[0][1] = true
                         }
                     }
@@ -313,22 +355,32 @@ export class ContaplusModel {
 
     // Sets the selected years
     SetSelectedYears(years) {
-        console.log("ContaplusModel::SetSelectedYears (" + years + ")")
+        console.debug(`ContaplusModel::SetSelectedYears(${years})`)
         this.years_selected = years
     }
 
     // Gets the selected years
     GetSelectedYears() {
-        console.log("ContaplusModel::GetSelectedYears")
+        console.debug(`ContaplusModel::GetSelectedYears`)
         if (this.years_selected === undefined) {
             this.years_selected = new Array()
         }
         return this.years_selected
     }
 
-    // Unpacks a Map of company name => []years
+    // Remove configuration
+    RemoveConfig() {
+        console.debug(`ContaplusModel::RemoveConfig`)
+        this.config.delete("folders")
+        this.config.delete("folder")
+        this.config.delete("companies")
+        this.config.delete("company")
+        delete(this.years_selected)
+    }
+
+    // Unpacks a Map of company name => ContaplusCompany{}
     unpackCompanies(packedCompanies) {
-        console.log("ContaplusModel::unpackCompanies")
+        console.debug(`ContaplusModel::unpackCompanies(${packedCompanies})`)
         // Builds a Map (config-store saves an Array)
         let companies = new Map()
         for (let entry of packedCompanies) {
@@ -337,17 +389,17 @@ export class ContaplusModel {
         return companies
     }
 
-    // Packs a Map of companies to array name => years
+    // Packs a Map of companies to array ContaplusCompany{}
     packCompanies(companies) {
         let values = Array.from(companies.values())
-        console.log("ContaplusModel::packCompanies(" + values + ")")
+        console.debug(`ContaplusModel::packCompanies(${values})`)
         // Store as a hash (config-store cannot save a map)
         return values
     }
 
     // Tests if a file exists
     testFile(fileName, wantDir = true) {
-        console.debug("ContaplusModel::testFile(" + fileName + ")")
+        console.debug(`ContaplusModel::testFile(${fileName})`)
         return new Promise((resolve, reject) => {
             fs.stat(fileName, (err, stats) => {
                 if (err) {
@@ -362,14 +414,14 @@ export class ContaplusModel {
             })
         })
         .then((isFile) => {
-            console.log("ContaplusModel::testFile(" + fileName + ", " + wantDir + ") = " + isFile)
+            console.debug(`ContaplusModel::testFile(${fileName}, ${wantDir} = ${isFile}`)
             return isFile
         })
     }
 
     // Test if the given path has a "GrupoSP" folder and an "Empresa.dbf" file
     testGrupoSP(mount) {
-        console.debug("ContaplusModel::testGrupoSP(" + mount + ")")
+        console.debug(`ContaplusModel::testGrupoSP(${mount})`)
         let self = this
         let test = path.join(mount, "GrupoSP")
         return self.testFile(test, true)
@@ -386,12 +438,34 @@ export class ContaplusModel {
         })
     }
 
-    // Remove configuration
-    RemoveConfig() {
-        this.config.delete("folders")
-        this.config.delete("folder")
-        this.config.delete("companies")
-        this.config.delete("company")
-        delete(this.years_selected)
+    // Promises the list of FileStats to upload
+    FilesToUpload() {
+        console.debug(`ContaplusModel::FilesToUpload`)
+        let folder = this.GetSelectedFolder()
+        let years  = this.GetSelectedYears()
+        const files = [ "Diario.dbf", "Subcta.dbf" ]
+        let stats = new Array()
+        for (let item of years) {
+            let company = item[0]
+            let checked = item[1]
+            if (checked) {
+                console.debug(`ContaplusModel::FilesToUpload:added ${company}`)
+                let emp = "EMP" + company.codes[0].toString()
+                for (let fileName of files) {
+                    let localFile = path.join(folder, "CONTABLD", emp, fileName)
+                    let remoteFile = [ emp, fileName ].join("/")
+                    stats.push((new FileStats(
+                        company.name, company.years[0].toString(),
+                        localFile, remoteFile)).Stats())
+                }
+            }
+        }
+        if (stats.length > 0) {
+            // Add the directory book
+            let localFile = path.join(folder, "CONTABLD", "EMP", "Empresa.dbf")
+            let remoteFile = [ "EMP", "Empresa.dbf" ].join("/")
+            stats.push((new FileStats("-", "-", localFile, remoteFile)).Stats())
+        }
+        return Promise.all(stats)
     }
 }

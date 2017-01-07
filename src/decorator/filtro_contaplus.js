@@ -6,7 +6,7 @@ export function FiltroContaplus (contaplus, cohete) {
         console.debug("FiltroContaplus::(" +
             Array.from(companies.values()) + ")")
         return new Promise((resolve, reject) => {
-            // Filter entries below 2007
+            // Filter entries below 2010
             let result = new Map()
             for (let entry of companies.values()) {
                 let newEntry = new ContaplusCompany({ name: entry.name })

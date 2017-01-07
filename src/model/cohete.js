@@ -1,3 +1,4 @@
+import { ContaplusCompany } from './contaplus'
 import unirest from 'unirest';
 
 export class CoheteModel {
@@ -7,10 +8,12 @@ export class CoheteModel {
         this.env = env
     }
 
+    // Gets the cached user's email
     GetEmail() {
         return this.config.get("email")
     }
 
+    // Saves the cached user's email
     SetEmail(email) {
         this.config.set("email", email)
     }
@@ -52,10 +55,12 @@ export class CoheteModel {
         })
     }
 
+    // Gets the cached token
     GetToken() {
         return this.config.get("token")
     }
 
+    // Sets the cached token
     SetToken(token) {
         this.config.set("token", token)
     }
@@ -97,6 +102,7 @@ export class CoheteModel {
         })
     }
 
+    /*
     ScanSources() {
         console.log("CoheteModel::ScanSources")
         return new Promise((resolve, reject) => {
@@ -124,25 +130,81 @@ export class CoheteModel {
         }
         return this.fuentes_selected
     }
+    */
 
-    SubmitContaplus(contaplus, callback) {
-        console.log("SubmitModel::Submit")
-        return new Promise((resolve, reject) => {
-            let progress = 0
-            function increment() {
-                callback(progress)
-                if (progress >= 100) {
-                    resolve("Todos los ficheros actualizados")
-                } else {
-                    progress += 5
-                    setTimeout(increment, 250)
+    // Submits the files selected by contaplus
+    SubmitContaplus(contaplus, progress_callback) {
+        console.debug(`CoheteModel::SubmitContaplus`)
+        let self = this
+        return contaplus.FilesToUpload()
+        .then((stats) => {
+            let totalSize = 0
+            for (let item of stats) {
+                if (!item.stats.size) {
+                    throw new Error(`No se ha podido determinar el tamaño del fichero <b>${item.localFile}`)
+                } else if (item.stats.size > self.env.max_file_size) {
+                    throw new Error(`El fichero <b>${item.localFile} es demasiado grande, no se puede importar`)
                 }
+                // Total bytes up to this item
+                item.prevSize = totalSize
+                // Total of bytes to upload, including this item
+                totalSize += item.stats.size
+                item.postSize = totalSize
             }
-            setTimeout(increment, 250)
-            callback(progress)
+            return stats
+        })
+        .then((stats) => {
+            let statsLen = stats.length
+            if (statsLen > 0) {
+                let totalSize = stats[statsLen-1].postSize
+                // unwind the stats array, uploading a file at a time
+                return self.uploadNext(stats, totalSize, 0, progress_callback)
+            }
+            return true // done
+        })
+        .then((done) => {
+            return "Todos los ficheros correctamente subidos"
         })
     }
 
+    // Uploads a single file, reports progress
+    uploadNext(stats, totalSize, index, progress_callback) {
+        let self = this
+        console.debug(`CoheteModel::uploadNext(stats, ${totalSize}, ${index})`)
+        return new Promise((resolve, reject) => {
+            if (index >= stats.length) {
+                resolve(true)
+                return
+            }
+            let current   = stats[index]
+            let fileSize  = current.stats.size
+            let progress  = current.prevSize
+            let increment = fileSize / 10
+            console.debug(`CoheteModel::uploadNext:current = ${current}, from byte ${progress} to byte ${progress+fileSize} in increments of ${increment}`)
+            function chunk() {
+                let percent = Math.min(Math.floor((progress * 100) / totalSize), 100)
+                console.debug(`Progress: up to ${progress} of ${totalSize} (${percent}%)`)
+                progress_callback(percent)
+                if (progress >= fileSize) {
+                    resolve(false) // this file is done, go for next one
+                } else {
+                    progress += increment
+                    setTimeout(chunk, 250)
+                }
+            }
+            setTimeout(chunk, 250)
+        })
+        .then((done) => {
+            // If index < stats.length, go for next one
+            if (!done) {
+                return self.uploadNext(stats, totalSize, index+1, progress_callback)
+            }
+            // otherwise, we are done
+            return true
+        })
+    }
+
+    // Clears the cached configs
     RemoveConfig() {
         this.config.delete("email")
         this.config.delete("token")
