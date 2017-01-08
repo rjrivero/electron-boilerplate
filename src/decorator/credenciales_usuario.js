@@ -7,36 +7,37 @@ export class CredencialesUsuario {
     }
 
     GetCredentials() {
-        console.debug("LoginCohete::GetCredentials")
+        console.debug(`LoginCohete::GetCredentials`)
         return { email: this.cohete.GetEmail() }
     }
 
     CheckCredentials(email, pass) {
-        console.debug("LoginCohete::CheckCredentials(" + email + ")")
+        console.debug(`LoginCohete::CheckCredentials(${email})`)
         let self = this
         return new Promise((resolve, reject) => {
             if (!pass) {
-                // If not password, test if we have cached credentials
+                // There is no password and no email, return error
                 if (email != self.GetCredentials().email) {
                     reject("Debe introducir nombre de usuario (email) y contraseña")
                 } else {
-                    // Todo: comprobar que tenemos credenciales cacheadas.
-                    self.cohete.CheckToken().then((cached) => {
-                        resolve(cached)
+                    // There is an email without password: test that
+                    // we have cached credencials for that email.
+                    self.cohete.CheckToken(email).then((valid) => {
+                        resolve(valid)
                     })
                     .catch((err) => { reject(err)})
                 }
             } else if (!email) {
-                // Test email and pass
+                // There is a password but no email, unexpected.
                 self.triggerError("Debe introducir nombre de usuario (email) y contraseña")
             } else {
-                // Check credentials
+                // There is both password and email, check them
                 self.cohete.CheckEmail(email, pass)
                 .then(() => {
-                    return self.cohete.CheckToken()
+                    return self.cohete.CheckToken(email)
                 })
-                .then((cached) => {
-                    resolve(cached)
+                .then((valid) => {
+                    resolve(valid)
                 })
                 .catch((err) => {
                     reject(err)

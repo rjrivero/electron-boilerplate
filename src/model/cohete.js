@@ -15,6 +15,11 @@ export class CoheteModel {
 
     // Saves the cached user's email
     SetEmail(email) {
+        // If email changes, then token must be cleared.
+        let prevEmail = this.GetEmail()
+        if (prevEmail && prevEmail != email) {
+            this.config.delete("token")
+        }
         this.config.set("email", email)
     }
 
@@ -38,7 +43,7 @@ export class CoheteModel {
                 try {
                     if (response.ok) {
                         self.SetEmail(email)
-                        self.SetToken(response.body.message)
+                        self.setToken(response.body.message)
                         resolve(response.body)
                     } else {
                         let err = "Error contactando con el servidor.\n" +
@@ -56,23 +61,24 @@ export class CoheteModel {
     }
 
     // Gets the cached token
-    GetToken() {
+    getToken() {
         return this.config.get("token")
     }
 
     // Sets the cached token
-    SetToken(token) {
+    setToken(token) {
         this.config.set("token", token)
     }
 
     // Check the token is still valid
-    CheckToken() {
+    CheckToken(email) {
         console.log("CoheteModel::CheckToken")
         let url = this.env.url_validate
-        let token = this.config.get("token")
+        let token = this.getToken()
         let self = this
         return new Promise((resolve, reject) => {
-            if(!token) {
+            // The token is only valid if the email remains the same
+            if(!token || (email && email != self.GetEmail())) {
                 resolve(false)
             }
             unirest.get(url)
