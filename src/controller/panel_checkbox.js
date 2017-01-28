@@ -2,7 +2,7 @@ import { enableButton } from './panel_tools'
 import { Panel } from './panel'
 
 /*
- Configuration panel with a login form
+ Configuration panel with a set of checkboxes
  */
 export class CheckboxPanel extends Panel {
 

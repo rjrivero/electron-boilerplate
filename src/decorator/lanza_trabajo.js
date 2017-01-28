@@ -24,12 +24,9 @@ export class LanzaTrabajo  {
     }
 
     // Submit result and update progress bar
-    Submit(progress) {
+    Submit(progress_callback) {
         console.debug("LanzaTrabajo::Submit")
-        progress.css("width", "0%")
-        return this.cohete.SubmitContaplus(this.contaplus, (percent) => {
-            progress.css("width", percent + "%")
-        })
+        return this.cohete.SubmitContaplus(this.contaplus, progress_callback)
     }
 
     joinField(items, ...indexes) {

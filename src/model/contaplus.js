@@ -78,10 +78,11 @@ export class ContaplusCompany {
 // File stats
 export class FileStats {
 
-    constructor(company, year, localFile, remoteFile) {
+    constructor(company, year, localFile, remoteFolder, remoteFile) {
         this.company = company
         this.year = year
         this.localFile = localFile
+        this.remoteFolder = remoteFolder
         this.remoteFile = remoteFile
         this.stats = null
     }
@@ -453,18 +454,16 @@ export class ContaplusModel {
                 let emp = "EMP" + company.codes[0].toString()
                 for (let fileName of files) {
                     let localFile = path.join(folder, "CONTABLD", emp, fileName)
-                    let remoteFile = [ emp, fileName ].join("/")
                     stats.push((new FileStats(
                         company.name, company.years[0].toString(),
-                        localFile, remoteFile)).Stats())
+                        localFile, emp, fileName)).Stats())
                 }
             }
         }
         if (stats.length > 0) {
             // Add the directory book
             let localFile = path.join(folder, "CONTABLD", "EMP", "Empresa.dbf")
-            let remoteFile = [ "EMP", "Empresa.dbf" ].join("/")
-            stats.push((new FileStats("-", "-", localFile, remoteFile)).Stats())
+            stats.push((new FileStats("-", "-", localFile, "EMP", "Empresa.dbf")).Stats())
         }
         return Promise.all(stats)
     }

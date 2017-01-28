@@ -2,7 +2,7 @@ import { showDialog } from './panel_tools'
 import { Panel } from './panel'
 
 /*
- Configuration panel with a login form
+ Configuration panel with a submit option
  */
 export class SubmitPanel extends Panel {
 
@@ -56,8 +56,9 @@ export class SubmitPanel extends Panel {
     // Get checked values and continue
     triggerSelected() {
         let self = this
+        self.progress.css("width", "0%")
         self.showSpinner()
-        self.model.Submit(self.progress).then((msg) => {
+        self.model.Submit(self.updateSpinner.bind(self)).then((msg) => {
             self.hideSpinner()
             showDialog("success", "Actualizacion completada", msg)
         })

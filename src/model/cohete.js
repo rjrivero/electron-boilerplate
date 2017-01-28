@@ -1,4 +1,5 @@
 import { ContaplusCompany } from './contaplus'
+import fs from 'fs';
 import unirest from 'unirest';
 
 export class CoheteModel {
@@ -42,8 +43,10 @@ export class CoheteModel {
             .end((response) => {
                 try {
                     if (response.ok) {
+                        console.log("CheckEmail: " + JSON.stringify(response.body))
                         self.SetEmail(email)
-                        self.setToken(response.body.message)
+                        self.setTenant(response.body.message.subject)
+                        self.setToken(response.body.message.token)
                         resolve(response.body)
                     } else {
                         let err = "Error contactando con el servidor.\n" +
@@ -70,6 +73,16 @@ export class CoheteModel {
         this.config.set("token", token)
     }
 
+    // Gets the cached tenant
+    getTenant() {
+        return this.config.get("tenant")
+    }
+
+    // sets the tenant name
+    setTenant(tenant) {
+        this.config.set("tenant", tenant)
+    }
+
     // Check the token is still valid
     CheckToken(email) {
         console.log("CoheteModel::CheckToken")
@@ -81,7 +94,8 @@ export class CoheteModel {
             if(!token || (email && email != self.GetEmail())) {
                 resolve(false)
             }
-            unirest.get(url)
+            let tenant = self.getTenant()
+            unirest.get(url.replace("TENANT", tenant))
             .header("Accept", "application/json")
             .header("X-Access-Token", token)
             .timeout(3000)
@@ -175,38 +189,58 @@ export class CoheteModel {
 
     // Uploads a single file, reports progress
     uploadNext(stats, totalSize, index, progress_callback) {
-        let self = this
         console.debug(`CoheteModel::uploadNext(stats, ${totalSize}, ${index})`)
+        if (index >= stats.length) {
+            return true
+        }
+        let token = this.getToken()
+        let tenant = this.getTenant()
+        let url = this.env.url_upload
+        let self = this
+        let current = stats[index]
         return new Promise((resolve, reject) => {
-            if (index >= stats.length) {
-                resolve(true)
-                return
-            }
-            let current   = stats[index]
-            let fileSize  = current.stats.size
-            let progress  = current.prevSize
-            let increment = fileSize / 10
-            console.debug(`CoheteModel::uploadNext:current = ${current}, from byte ${progress} to byte ${progress+fileSize} in increments of ${increment}`)
-            function chunk() {
+            let message = "Subiendo fichero " + current.localFile
+            let progress = current.prevSize
+            let streamFile = fs.createReadStream(current.localFile)
+            streamFile.on('data', (chunk) => {
+                progress += chunk.length
                 let percent = Math.min(Math.floor((progress * 100) / totalSize), 100)
-                console.debug(`Progress: up to ${progress} of ${totalSize} (${percent}%)`)
-                progress_callback(percent)
-                if (progress >= fileSize) {
-                    resolve(false) // this file is done, go for next one
-                } else {
-                    progress += increment
-                    setTimeout(chunk, 250)
+                progress_callback(percent, message)
+            })
+            unirest.post(url.replace("TENANT", tenant))
+            .header("Accept", "application/json")
+            .header("X-Access-Token", token)
+            .timeout(3000)
+            .field('folder', current.remoteFolder)
+            .attach('file', streamFile)
+            .end((response) => {
+                try {
+                    if (response.ok) {
+                        console.log("uploadNext: " + JSON.stringify(response.body))
+                        resolve(response.body.success === true)
+                    } else if (response.code == 401) {
+                        // Credentials are expired
+                        reject("Nombre de usuario o contraseña incorrectos")
+                    } else {
+                        let err = "Error contactando con el servidor.\n" +
+                            "Por favor compruebe sus credenciales y su conexión a Internet.\n"
+                        if (response.body && response.body.message) {
+                            err += "El servidor respondió: " + response.body.message
+                        }
+                        reject(err)
+                    }
+                } catch(err) {
+                    reject(err)
                 }
-            }
-            setTimeout(chunk, 250)
+            })
         })
-        .then((done) => {
-            // If index < stats.length, go for next one
-            if (!done) {
+        .then((success) => {
+            // If file upload was successfull, go for the next one
+            if (success && index < stats.length) {
                 return self.uploadNext(stats, totalSize, index+1, progress_callback)
             }
             // otherwise, we are done
-            return true
+            return success
         })
     }
 

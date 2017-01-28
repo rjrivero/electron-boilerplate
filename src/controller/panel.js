@@ -1,11 +1,5 @@
 import { switchClass, disableButton, enableButton } from './panel_tools'
 
-class ScanDecorator {
-
-    ScanValues(refresh = false) {}
-    GetValues() {}
-}
-
 /*
  Basic configuration panel
  */
@@ -20,6 +14,8 @@ export class Panel {
         this.body = $("#" + prefix + "_body")
         this.apply = $("#" + prefix + "_apply")
         this.spinner = $("#" + prefix + "_spinner")
+        this.progress = $("#" + prefix + "_progress")
+        this.loading = $("#" + prefix + "_loading")
         // Bind controller methods
         let self = this
         this.apply.off().on("click", (event) => {
@@ -105,8 +101,9 @@ export class Panel {
     }
 
     // Show the Spinner layer
-    showSpinner() {
+    showSpinner(message) {
         console.debug(this.prefix + "::showSpinner")
+        this.loading.html(message || "")
         this.spinner.removeClass("hidden")
     }
 
@@ -114,6 +111,15 @@ export class Panel {
     hideSpinner() {
         console.debug(this.prefix + "::hideSpinner")
         this.spinner.addClass("hidden")
+    }
+
+    // Updates the spinner progress message and percent
+    updateSpinner(percent, message) {
+        console.debug(this.prefix + "::updateSpinner")
+        this.progress.css("width", percent + "%")
+        if (message) {
+            this.loading.html(message)
+        }
     }
 
     // Set a callback for when path is selected
