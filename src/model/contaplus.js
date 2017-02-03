@@ -45,6 +45,7 @@ export class ContaplusCompany {
 
     // Returns an array of options. Each option has three fields:
     // [ company(ContaplusCompany), checked(bool), label(string) ]
+    // And each company has a single year and code
     // sorted by year (descending)
     Options() {
         console.debug(`ContaplusCompany::Options`)

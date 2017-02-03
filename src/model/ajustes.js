@@ -22,21 +22,21 @@ export class AjustesModel {
             let auto_update = this.config.get("auto_update")
             let env = this.env
             let result = [
+                /*
                 ["start_on_boot",
                     (start_on_boot === undefined) ? env.start_on_boot : start_on_boot,
-                    "Arrancar al iniciar sesión"]/*,
+                    "Arrancar automáticamente al iniciar sesión"],
                 ["minimize_to_tray",
                     (minimize_to_tray === undefined) ? env.minimize_to_tray : minimize_to_tray,
                     "Mantener en la bandeja de tareas"],
                 ["auto_update",
                     (auto_update === undefined) ? env.auto_update : auto_update,
                     "Actualizar automáticamente"]*/
-            ]
-            if (self.env.name !== 'production') {
-                result.push(["remove_config",
+                ["remove_config",
                     false,
                     "Borrar todas las configuraciones"]
-                )
+            ]
+            if (self.env.name !== 'production') {
             }
             resolve(result)
         })

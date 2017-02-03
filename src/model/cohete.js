@@ -248,5 +248,6 @@ export class CoheteModel {
     RemoveConfig() {
         this.config.delete("email")
         this.config.delete("token")
+        this.config.delete("tenant")
     }
 }

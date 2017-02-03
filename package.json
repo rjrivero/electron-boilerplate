@@ -1,11 +1,11 @@
 {
-  "name": "actualizadorSmartBI",
-  "productName": "Actualizador smartBI",
-  "description": "Actualizador de smartBI para extracción de datos de Contaplus",
-  "version": "0.0.1",
-  "author": "Five <actualizador.contaplus@fivecorporation.com>",
+  "name": "conectorContaplusSmartBI",
+  "productName": "Conector Contaplus smartBI",
+  "description": "Conector de smartBI con Contaplus",
+  "version": "1.0.1",
+  "author": "smartBI by Five",
   "copyright": "© 2017, Five S.L.",
-  "homepage": "http://fivecorporation.com",
+  "homepage": "https://smartbi.acens.net",
   "license": "MIT",
   "main": "app/background.js",
   "build": {
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "auto-launch": "^5.0.1",
-    "drivelist": "^5.0.4",
+    "drivelist": "^5.0.9",
     "electron-config": "^0.2.1",
     "fs-jetpack": "^0.10.2",
     "jquery": "^1.12.4",
@@ -45,20 +45,20 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "electron": "^1.4.7",
-    "electron-builder": "^10.12.0",
+    "electron-builder": "^12.3.1",
     "electron-mocha": "^3.0.0",
     "gulp": "^3.9.0",
     "gulp-batch": "^1.0.5",
     "gulp-less": "^3.0.3",
     "gulp-plumber": "^1.1.0",
-    "gulp-util": "^3.0.6",
+    "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.5",
     "istanbul": "^0.4.3",
     "minimist": "^1.2.0",
     "mocha": "^3.0.2",
-    "rollup": "^0.38.0",
+    "rollup": "^0.41.4",
     "rollup-plugin-istanbul": "^1.1.0",
-    "source-map-support": "^0.4.2",
-    "spectron": "^3.3.0"
+    "source-map-support": "^0.4.11",
+    "spectron": "^3.5.0"
   }
 }
