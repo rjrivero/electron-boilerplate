@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import unirest from 'unirest'
+
 
 export class AjustesModel {
 
