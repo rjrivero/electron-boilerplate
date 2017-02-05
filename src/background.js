@@ -18,6 +18,11 @@ import env from './env';
 var mainWindow;
 var settings;
 
+// Application id to send and receive notifications
+// See https://github.com/electron-userland/electron-builder/wiki/NSIS
+const appId = "com.fivecorporation.smartbi.contaplus.desktop"
+app.setAppUserModelId(appId)
+
 var setApplicationMenu = function () {
     if (env.name !== 'production') {
         var menus = [editMenuTemplate];
@@ -39,7 +44,7 @@ app.on('ready', function () {
     setApplicationMenu();
 
     mainWindow = createWindow('main', {
-        width: 900,
+        width: 860,
         height: 600,
         minWidth: env.window_min_width,
         maxWidth: env.window_max_width,

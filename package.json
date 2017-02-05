@@ -10,6 +10,13 @@
   "main": "app/background.js",
   "build": {
     "appId": "com.fivecorporation.smartbi.contaplus.desktop",
+    "copyright": "Copyright © 2017 Five S.L.",
+    "nsis": {
+      "language": "3082"
+    },
+    "squirrelWindows": {
+      "useAppIdAsId": true
+    },
     "files": [
       "app/**/*",
       "node_modules/**/*",
