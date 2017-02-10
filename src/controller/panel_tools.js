@@ -84,9 +84,10 @@ export function showDialog(style, header, message) {
     let modal = $("#modal_popup")
     let title = $("#modal_title")
     let body = $("#modal_body")
+    let headbox = $("#modal_header")
     title[0].innerHTML = header
     body[0].innerHTML  = message
-    switchClass(title, "bg-.*", "bg-" + style)
+    switchClass(headbox, "bg-.*", "bg-" + style)
     modal.modal()
 }
 
