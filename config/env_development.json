@@ -5,14 +5,13 @@
   "window_min_width": 600,
   "window_max_width": 1920,
 
-  "start_on_boot": false,
+  "start_on_boot": true,
   "minimize_to_tray": true,
   "auto_update": true,
 
   "max_file_size": 35000000,
   "url_credentials": "https://devel.smartbi.es/tenants/devel/api/token",
-  "url_username": "subject",
-  "url_password": "secret",
   "url_validate": "https://devel.smartbi.es/tenants/TENANT/api/token",
-  "url_upload": "https://devel.smartbi.es/tenants/TENANT/api/files"
+  "url_upload": "https://devel.smartbi.es/tenants/TENANT/api/files",
+  "url_timeout": 1000
 }

@@ -24,6 +24,109 @@ export class CoheteModel {
         this.config.set("email", email)
     }
 
+    // Posts a request
+    _post(url, data, token) {
+        console.log(`CoheteModel::_post(${url})`)
+        let self = this
+        return new Promise((resolve, reject) => {
+            try {
+                let req = unirest.post(url)
+                .header('Accept', 'application/json')
+                .timeout(self.env.url_timeout)
+                if (token) {
+                    req = req.header("X-Access-Token", token)
+                }
+                if (data) {
+                    // XXX DEBUG
+                    req = req.field("subject", data.email)
+                    .field("secret", data.password)
+                    //req = req.send(data)
+                }
+                req.end((response) => {
+                    if (response.ok) {
+                        resolve(response)
+                    } else {
+                        reject(self._error(response))
+                    }
+                })
+            } catch(err) {
+                reject(self._error(err))
+            }
+        })
+    }
+
+    // Gets a request
+    _get(url, data, token) {
+        console.log(`CoheteModel::_get(${url})`)
+        let self = this
+        return new Promise((resolve, reject) => {
+            try {
+                let req = unirest.get(url)
+                .header('Accept', 'application/json')
+                .timeout(self.env.url_timeout)
+                if (token) {
+                    req = req.header("X-Access-Token", token)
+                }
+                if (data) {
+                    req = req.send(data)
+                }
+                req.end((response) => {
+                    if (response.ok) {
+                        resolve(response)
+                    } else {
+                        reject(self._error(response))
+                    }
+                })
+            } catch(err) {
+                reject(self._error(err))
+            }
+        })
+    }
+
+    // Posts a file
+    _file(url, stat, token, callback) {
+        console.log(`CoheteModel::_file(${url})`)
+        let self = this
+        return new Promise((resolve, reject) => {
+            try {
+                // Notify upload progress
+                let streamFile = fs.createReadStream(stat.localFile)
+                streamFile.on('data', callback)
+                // Post file
+                let req = unirest.post(url)
+                .header('Accept', 'application/json')
+                .timeout(self.env.url_timeout)
+                if (token) {
+                    req = req.header("X-Access-Token", token)
+                }
+                req.field('folder', stat.remoteFolder)
+                .attach('file', streamFile)
+                .end((response) => {
+                    if (response.ok) {
+                        resolve(response)
+                    } else {
+                        reject(self._error(response))
+                    }
+                })
+            } catch(err) {
+                reject(self._error(err))
+            }
+        })
+    }
+
+    // Formats a communication error "beautifully"
+    _error(err) {
+        console.log(`CoheteModel::_error(${err})`)
+        let newErr = "Error contactando con el servidor.\n" +
+                     "Por favor compruebe sus credenciales y su conexión a Internet.\n"
+        if (err.body && err.body.message) {
+            newErr += "El servidor respondió: " + err.body.message
+        } else if (err.status && err.status != 401) {
+            newErr += "Si el error persiste, por favor incluya estos detalles al reportar su incidencia:\n" + JSON.stringify(err)
+        }
+        return new Error(newErr)
+    }
+
     // Checks the email credentials are valid
     CheckEmail(email, pass) {
         console.log("CoheteModel::CheckEmail (" + email + ")")
@@ -34,32 +137,20 @@ export class CoheteModel {
         let password = env.url_password
         let self = this
         // Configure the client
-        return new Promise((resolve, reject) => {
-            unirest.post(url)
-            .header('Accept', 'application/json')
-            .field(username, email)
-            .field(password, pass)
-            .timeout(3000)
-            .end((response) => {
-                try {
-                    if (response.ok) {
-                        console.log("CheckEmail: " + JSON.stringify(response.body))
-                        self.SetEmail(email)
-                        self.setTenant(response.body.message.subject)
-                        self.setToken(response.body.message.token)
-                        resolve(response.body)
-                    } else {
-                        let err = "Error contactando con el servidor.\n" +
-                            "Por favor compruebe sus credenciales y su conexión a Internet.\n"
-                        if (response.body && response.body.message) {
-                            err += "El servidor respondió: " + response.body.message
-                        }
-                        reject(err)
-                    }
-                } catch(err) {
-                    reject(err)
-                }
-            })
+        let credentials = {
+            "email": email,
+            "password": pass
+        }
+        return self._post(url, credentials, null)
+        .then((response) => {
+            let message = response.body.message
+            if (message && message.subject && message.token) {
+                self.SetEmail(email)
+                self.setTenant(message.subject)
+                self.setToken(message.token)
+                return true
+            }
+            return false
         })
     }
 
@@ -89,36 +180,16 @@ export class CoheteModel {
         let url = this.env.url_validate
         let token = this.getToken()
         let self = this
-        return new Promise((resolve, reject) => {
-            // The token is only valid if the email remains the same
-            if(!token || (email && email != self.GetEmail())) {
-                resolve(false)
-            }
-            let tenant = self.getTenant()
-            unirest.get(url.replace("TENANT", tenant))
-            .header("Accept", "application/json")
-            .header("X-Access-Token", token)
-            .timeout(3000)
-            .end((response) => {
-                try {
-                    if (response.ok) {
-                        console.log("CheckToken: " + JSON.stringify(response.body))
-                        resolve(response.body.success === true)
-                    } else if (response.code == 401) {
-                        // Credentials are expired
-                        reject("Nombre de usuario o contraseña incorrectos")
-                    } else {
-                        let err = "Error contactando con el servidor.\n" +
-                            "Por favor compruebe sus credenciales y su conexión a Internet.\n"
-                        if (response.body && response.body.message) {
-                            err += "El servidor respondió: " + response.body.message
-                        }
-                        reject(err)
-                    }
-                } catch(err) {
-                    reject(err)
-                }
-            })
+        // The token is only valid if the email remains the same
+        if(!token || (email && email != self.GetEmail())) {
+            console.log(`No hay token, o el email guardado no coincide`)
+            return Promise.resolve(false)
+        }
+        let tenant = self.getTenant()
+        return self._get(url.replace("TENANT", tenant), null, token)
+        .then((response) => {
+            console.log("CheckToken: " + JSON.stringify(response.body))
+            return response.body.success
         })
     }
 
@@ -156,6 +227,17 @@ export class CoheteModel {
     SubmitContaplus(contaplus, progress_callback) {
         console.debug(`CoheteModel::SubmitContaplus`)
         let self = this
+        return self.uploadAll(contaplus, progress_callback)
+        .then((done) => {
+            console.log("Cohete::SubmitContaplus: Todos los ficheros correctamente subidos")
+            return "Todos los trabajos correctamente ejecutados"
+        })
+    }
+
+    // Uploads all files, reports progress
+    uploadAll(contaplus, progress_callback) {
+        console.debug(`CoheteModel::UploadAll`)
+        let self = this
         return contaplus.FilesToUpload()
         .then((stats) => {
             let totalSize = 0
@@ -182,65 +264,36 @@ export class CoheteModel {
             }
             return true // done
         })
-        .then((done) => {
-            return "Todos los ficheros correctamente subidos"
-        })
     }
 
     // Uploads a single file, reports progress
     uploadNext(stats, totalSize, index, progress_callback) {
         console.debug(`CoheteModel::uploadNext(stats, ${totalSize}, ${index})`)
         if (index >= stats.length) {
-            return true
+            return Promise.resolve(true)
         }
-        let token = this.getToken()
-        let tenant = this.getTenant()
         let url = this.env.url_upload
-        let self = this
+        let tenant = this.getTenant()
+        let token = this.getToken()
         let current = stats[index]
-        return new Promise((resolve, reject) => {
-            let message = "Subiendo fichero " + current.localFile
-            let progress = current.prevSize
-            let streamFile = fs.createReadStream(current.localFile)
-            streamFile.on('data', (chunk) => {
-                progress += chunk.length
-                let percent = Math.min(Math.floor((progress * 100) / totalSize), 100)
-                progress_callback(percent, message)
-            })
-            unirest.post(url.replace("TENANT", tenant))
-            .header("Accept", "application/json")
-            .header("X-Access-Token", token)
-            .timeout(3000)
-            .field('folder', current.remoteFolder)
-            .attach('file', streamFile)
-            .end((response) => {
-                try {
-                    if (response.ok) {
-                        console.log("uploadNext: " + JSON.stringify(response.body))
-                        resolve(response.body.success === true)
-                    } else if (response.code == 401) {
-                        // Credentials are expired
-                        reject("Nombre de usuario o contraseña incorrectos")
-                    } else {
-                        let err = "Error contactando con el servidor.\n" +
-                            "Por favor compruebe sus credenciales y su conexión a Internet.\n"
-                        if (response.body && response.body.message) {
-                            err += "El servidor respondió: " + response.body.message
-                        }
-                        reject(err)
-                    }
-                } catch(err) {
-                    reject(err)
-                }
-            })
+        let message = "Subiendo fichero " + current.localFile
+        let progress = current.prevSize
+        let self = this
+        return self._file(url.replace("TENANT", tenant), current, token, (chunk) => {
+            progress += chunk.length
+            let percent = Math.min(Math.floor((progress * 100) / totalSize), 100)
+            progress_callback(percent, message)
+
         })
-        .then((success) => {
-            // If file upload was successfull, go for the next one
-            if (success && index < stats.length) {
-                return self.uploadNext(stats, totalSize, index+1, progress_callback)
+        .then((response) => {
+            console.log("uploadNext: " + JSON.stringify(response.body))
+            // Fail early if any file upload does not work
+            if (response.body.success !== true) {
+                throw new Error("No se ha podido subir el fichero " + current.localFile +
+                    ".\nEl error reportado por el servidor es " + response.body.message)
             }
-            // otherwise, we are done
-            return success
+            // If file upload was successful, go for the next one
+            return self.uploadNext(stats, totalSize, index+1, progress_callback)
         })
     }
 
