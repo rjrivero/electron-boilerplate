@@ -372,15 +372,15 @@ export class ContaplusModel {
 
     // Gets the configuration with selected years and codes.
     // Returns an item with { empresa, ejercicios, codigos }
-    GetSelectedModel() {
+    GetSelectedModel(commit = true) {
         let contaplusData = {
-            empresa: "",
+            empresa: this.GetSelectedCompany(),
+            pendiente: commit,
             ejercicios: new Array(),
             codigos: new Array()
         }
         for (let option of this.GetSelectedYears()) {
             let value = option[0]
-            contaplusData.empresa = value.name
             contaplusData.ejercicios.push(value.years[0])
             contaplusData.codigos.push(value.codes[0])
         }

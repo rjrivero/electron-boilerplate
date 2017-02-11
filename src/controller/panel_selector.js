@@ -38,7 +38,7 @@ export class SelectorPanel extends Panel {
     }
 
     canApply() {
-        return this.select.val()
+        return Promise.resolve(this.select.val())
     }
 
     disableSelector() {

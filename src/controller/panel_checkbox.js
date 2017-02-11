@@ -44,7 +44,7 @@ export class CheckboxPanel extends Panel {
     }
 
     canApply() {
-        return (this.cachedValues && this.cachedValues.length)
+        return Promise.resolve(this.cachedValues && this.cachedValues.length)
     }
 
     iterateChecks(each) {

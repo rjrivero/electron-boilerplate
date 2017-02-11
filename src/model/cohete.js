@@ -233,6 +233,36 @@ export class CoheteModel {
     }
     */
 
+    // Prefly Contaplus - Tests if Contaplus is configured
+    PreflyContaplus(contaplus, progress_callback) {
+        console.debug(`CoheteModel::PreflyContaplus`)
+        progress_callback(100)
+        // Check if there is currently some binding from
+        // contaplus to sources
+        let self = this
+        let tenant = self.getTenant()
+        let token = self.getToken()
+        let url = this.env.url_validate.replace("TENANT", tenant)
+        return this._get(url, null, token)
+        .then((response) => {
+            if (response.body.success) {
+                let data = response.body.data
+                if (data && data.length) {
+                    return true
+                }
+                // Configuration not performed yet.
+                // Send the selected data so that the end user
+                // can configure their sources
+                url = self.env.url_config.replace("TENANT", tenant)
+                let selection = contaplus.GetSelectedModel(false)
+                return this._post(url, selection, token)
+                .then((message) => {
+                    return false
+                })
+            }
+        })
+    }
+
     // Submits the files selected by contaplus
     SubmitContaplus(contaplus, progress_callback) {
         console.debug(`CoheteModel::SubmitContaplus`)
@@ -241,7 +271,7 @@ export class CoheteModel {
         .then((done) => {
             // Load contaplus config data
             let url = self.env.url_config.replace("TENANT", self.getTenant())
-            let selection = contaplus.GetSelectedModel()
+            let selection = contaplus.GetSelectedModel(true)
             progress_callback(100, "Configurando trabajos de actualización")
             return self._post(url, selection, self.getToken())
         })

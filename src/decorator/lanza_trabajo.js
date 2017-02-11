@@ -23,6 +23,12 @@ export class LanzaTrabajo  {
         return result
     }
 
+    // Test if the form is ready for submission
+    Prefly(progress_callback) {
+        console.debug("LanzaTrabajo::Prefly")
+        return this.cohete.PreflyContaplus(this.contaplus, progress_callback)
+    }
+
     // Submit result and update progress bar
     Submit(progress_callback) {
         console.debug("LanzaTrabajo::Submit")

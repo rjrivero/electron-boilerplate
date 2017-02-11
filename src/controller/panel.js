@@ -21,9 +21,11 @@ export class Panel {
         this.apply.off().on("click", (event) => {
             console.log("Activando " + self.prefix + "_apply")
             event.preventDefault()
-            if (self.canApply()) {
-                self.triggerSelected()
-            }
+            self.canApply().then((can) => {
+                if(can) {
+                    self.triggerSelected()
+                }
+            })
         })
     }
 
@@ -63,11 +65,14 @@ export class Panel {
     // Update the state of the "apply" button
     updateApply() {
         console.log(this.prefix + "::updateApply")
-        if (this.canApply()) {
-            enableButton(this.apply)
-        } else {
-            disableButton(this.apply)
-        }
+        let self = this
+        self.canApply().then((can) => {
+            if (can) {
+                enableButton(self.apply)
+            } else {
+                disableButton(self.apply)
+            }
+        })
     }
 
     // Send the "selected" event
@@ -139,6 +144,6 @@ export class Panel {
 
     // True if we can enable the "Accept" button
     canApply() {
-        return true
+        return Promise.resolve(true)
     }
 }

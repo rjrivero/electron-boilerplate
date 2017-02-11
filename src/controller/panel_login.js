@@ -45,7 +45,7 @@ export class LoginPanel extends Panel {
     }
 
     canApply() {
-        return this.username.val()
+        return Promise.resolve(this.username.val())
     }
 
     // Clicked on Apply: Check credentials and move forward.
