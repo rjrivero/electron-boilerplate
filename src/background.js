@@ -79,7 +79,6 @@ app.on('ready', function () {
     }
 
     settings = new Settings(app, mainWindow, env);
-    settings.Update();
 });
 
 app.on('window-all-closed', function () {

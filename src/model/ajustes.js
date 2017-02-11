@@ -17,10 +17,10 @@ export class AjustesModel {
         console.log("AjustesModel::ScanValues")
         let self = this
         return new Promise((resolve, reject) => {
-            let start_on_boot = this.config.get("start_on_boot")
-            let minimize_to_tray = this.config.get("minimize_to_tray")
-            let auto_update = this.config.get("auto_update")
-            let env = this.env
+            let start_on_boot = self.config.get("start_on_boot")
+            let minimize_to_tray = self.config.get("minimize_to_tray")
+            let auto_update = self.config.get("auto_update")
+            let env = self.env
             let result = [
                 /*
                 ["start_on_boot",
@@ -44,12 +44,21 @@ export class AjustesModel {
 
     SetSelected(options) {
         console.log("AjustesModel::SetSelected (" + options + ")")
+        let self = this
+        self.options = options
+        // Build a map from option to value
         let optionMap = new Object()
-        // Propagate event to main thread
-        this.options = options
         for (let option of options) {
             optionMap[option[0]] = option[1]
         }
+        // Update config
+        self.ScanValues().then((all_options) => {
+            for (let item of all_options) {
+                let option_name = item[0]
+                self.config.set(option_name, optionMap[option_name] || false)
+            }
+        })
+        // Propagate event to main thread
         ipcRenderer.send("update-settings", optionMap)
     }
 
