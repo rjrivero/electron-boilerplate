@@ -370,6 +370,23 @@ export class ContaplusModel {
         return this.years_selected
     }
 
+    // Gets the configuration with selected years and codes.
+    // Returns an item with { empresa, ejercicios, codigos }
+    GetSelectedModel() {
+        let contaplusData = {
+            empresa: "",
+            ejercicios: new Array(),
+            codigos: new Array()
+        }
+        for (let option of this.GetSelectedYears()) {
+            let value = option[0]
+            contaplusData.empresa = value.name
+            contaplusData.ejercicios.push(value.years[0])
+            contaplusData.codigos.push(value.codes[0])
+        }
+        return contaplusData
+    }
+
     // Remove configuration
     RemoveConfig() {
         console.debug(`ContaplusModel::RemoveConfig`)

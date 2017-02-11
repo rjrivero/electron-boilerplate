@@ -9,9 +9,11 @@
   "minimize_to_tray": true,
   "auto_update": true,
 
-  "max_file_size": 35000000,
+  "max_file_size": 64000000,
   "url_credentials": "https://smartbi.acens.net/api/contaplus/login",
   "url_validate": "https://smartbi.acens.net/api/contaplus/check-token",
   "url_upload": "https://devel.smartbi.es/tenants/TENANT/api/files",
+  "url_config": "https://smartbi.acens.net/api/contaplus/set-data",
+  "url_process": "https://devel.smartbi.es/tenants/TENANT/api/run",
   "url_timeout": 5000
 }

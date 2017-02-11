@@ -30,6 +30,7 @@ export class CoheteModel {
         let self = this
         let options = {
             method: method,
+            mode: 'cors',
             headers: {
                 Accept: 'application/json'
             }
@@ -38,23 +39,26 @@ export class CoheteModel {
             options.headers['X-Access-Token'] = token
         }
         if (data) {
-            options.headers['Content-Type'] = 'application/json; encoding=utf8'
+            options.headers['Content-Type'] = 'application/json; charset=utf-8'
             options.body = JSON.stringify(data)
         }
         return fetch(url, options)
         .then((response) => {
+            console.log(`Cohete::_ajax: Response with status ${response.status}`)
             return response.json().then((json) => {
-                let final = { status: response.status, body: json }
-                if (final.status == 200) {
-                    console.log(`Cohete::_ajax: Got Response ${JSON.stringify(final)}`)
-                    return final
-                } else {
-                    throw self._error(final)
-                }
+                return { status: response.status, body: json }
             })
         })
         .catch((err) => {
             throw self._error(err)
+        })
+        .then((response) => {
+            if (response.status == 200) {
+                console.log(`Cohete::_ajax: Got Response ${JSON.stringify(response)}`)
+                return response
+            } else {
+                throw self._error(response)
+            }
         })
     }
 
@@ -108,12 +112,12 @@ export class CoheteModel {
     // Formats a communication error "beautifully"
     _error(err) {
         console.log(`CoheteModel::_error(${err})`)
-        let newErr = "Error contactando con el servidor.\n" +
-                     "Por favor compruebe sus credenciales y su conexión a Internet.\n"
+        let newErr = "<p>Error contactando con el servidor.\n" +
+                     "Por favor compruebe sus credenciales y su conexión a Internet.\n</p>"
         if (err.body && err.body.message) {
-            newErr += "El servidor respondió: " + err.body.message
+            newErr += "<p>El servidor respondió: " + err.body.message + "</p>"
         } else if (err.status && err.status != 401) {
-            newErr += "Si el error persiste, por favor incluya estos detalles al reportar su incidencia:\n" + JSON.stringify(err)
+            newErr += "<p>Si el error persiste, por favor incluya estos detalles al reportar su incidencia:</p><pre>" + JSON.stringify(err) + "</pre>"
         }
         return new Error(newErr)
     }
@@ -223,9 +227,22 @@ export class CoheteModel {
         let self = this
         return self.uploadAll(contaplus, progress_callback)
         .then((done) => {
-            console.log("Cohete::SubmitContaplus: Todos los ficheros correctamente subidos")
-            return "Todos los trabajos correctamente ejecutados"
+            let url = self.env.url_config.replace("TENANT", self.getTenant())
+            let selection = contaplus.GetSelectedModel()
+            progress_callback(100, "Configurando trabajos de actualización")
+            return self._post(url, selection, self.getToken())
         })
+        .then((done) => {
+            return "Ejecución de trabajos completada"
+        })
+    }
+
+    // Sends a "run" command, waits for completion
+    runTask(progress_callback) {
+        let self = this
+        let url = self.env.url_process
+        let progress = 10
+        progress_callback(10, "Lanzando trabajo de actualización")
     }
 
     // Uploads all files, reports progress
