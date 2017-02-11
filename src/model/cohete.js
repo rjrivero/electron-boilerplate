@@ -1,5 +1,6 @@
 import { ContaplusCompany } from './contaplus'
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
 import unirest from 'unirest';
 
 export class CoheteModel {
@@ -24,63 +25,53 @@ export class CoheteModel {
         this.config.set("email", email)
     }
 
-    // Posts a request
-    _post(url, data, token) {
-        console.log(`CoheteModel::_post(${url})`)
+    // launches an ajax request
+    _ajax(method, url, data, token) {
         let self = this
-        return new Promise((resolve, reject) => {
-            try {
-                let req = unirest.post(url)
-                .header('Accept', 'application/json')
-                .timeout(self.env.url_timeout)
-                if (token) {
-                    req = req.header("X-Access-Token", token)
-                }
-                if (data) {
-                    // XXX DEBUG
-                    req = req.field("subject", data.email)
-                    .field("secret", data.password)
-                    //req = req.send(data)
-                }
-                req.end((response) => {
-                    if (response.ok) {
-                        resolve(response)
-                    } else {
-                        reject(self._error(response))
-                    }
-                })
-            } catch(err) {
-                reject(self._error(err))
+        let options = {
+            method: method,
+            headers: {
+                Accept: 'application/json'
             }
+        }
+        if (token) {
+            options.headers['X-Access-Token'] = token
+        }
+        if (data) {
+            options.headers['Content-Type'] = 'application/json; encoding=utf8'
+            options.body = JSON.stringify(data)
+        }
+        return fetch(url, options)
+        .then((response) => {
+            return response.json().then((json) => {
+                let final = { status: response.status, body: json }
+                if (final.status == 200) {
+                    console.log(`Cohete::_ajax: Got Response ${JSON.stringify(final)}`)
+                    return final
+                } else {
+                    throw self._error(final)
+                }
+            })
+        })
+        .catch((err) => {
+            throw self._error(err)
         })
     }
 
     // Gets a request
     _get(url, data, token) {
         console.log(`CoheteModel::_get(${url})`)
-        let self = this
-        return new Promise((resolve, reject) => {
-            try {
-                let req = unirest.get(url)
-                .header('Accept', 'application/json')
-                .timeout(self.env.url_timeout)
-                if (token) {
-                    req = req.header("X-Access-Token", token)
-                }
-                if (data) {
-                    req = req.send(data)
-                }
-                req.end((response) => {
-                    if (response.ok) {
-                        resolve(response)
-                    } else {
-                        reject(self._error(response))
-                    }
-                })
-            } catch(err) {
-                reject(self._error(err))
-            }
-        })
+        if (data) {
+            let vars = Object.keys(data).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&')
+            url = url + "?" + vars
+        }
+        return this._ajax("GET", url, null, token)
+    }
+
+    // Posts a request
+    _post(url, data, token) {
+        console.log(`CoheteModel::_post(${url})`)
+        return this._ajax("POST", url, data, token)
     }
 
     // Posts a file
@@ -143,12 +134,15 @@ export class CoheteModel {
         }
         return self._post(url, credentials, null)
         .then((response) => {
-            let message = response.body.message
-            if (message && message.subject && message.token) {
-                self.SetEmail(email)
-                self.setTenant(message.subject)
-                self.setToken(message.token)
-                return true
+            let message = response.body
+            if (message && message.success && message.data) {
+                let payload = jwt.decode(message.data)
+                if (payload && payload.sub) {
+                    self.SetEmail(email)
+                    self.setTenant(payload.sub)
+                    self.setToken(message.data)
+                    return true
+                }
             }
             return false
         })

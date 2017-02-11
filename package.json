@@ -46,6 +46,7 @@
     "electron-config": "^0.2.1",
     "fs-jetpack": "^0.10.2",
     "jquery": "^1.12.4",
+    "jsonwebtoken": "^7.2.1",
     "node-dbf": "^0.2.1",
     "unirest": "^0.5.1"
   },
