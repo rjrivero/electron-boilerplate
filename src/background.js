@@ -5,7 +5,7 @@
 
 import path from 'path';
 import url from 'url';
-import { app, Menu, Tray } from 'electron';
+import { app, Menu } from 'electron';
 import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import createWindow from './helpers/window';
@@ -79,6 +79,7 @@ app.on('ready', function () {
     }
 
     settings = new Settings(app, mainWindow, env);
+    settings.Update();
 });
 
 app.on('window-all-closed', function () {

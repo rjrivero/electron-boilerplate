@@ -78,6 +78,9 @@ export default function (name, options) {
     win = new BrowserWindow(Object.assign({}, options, state));
 
     win.on('close', saveState);
+    // In case someone wants to overload the close event
+    // (Like the system tray, for instance)
+    win.saveState = saveState;
 
     return win;
 }

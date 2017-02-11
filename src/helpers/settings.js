@@ -24,8 +24,10 @@ export class Settings {
         ipcMain.removeAllListeners("update-settings")
         ipcMain.on("update-settings", (event, arg) => {
             // Asocio el minimize to tray con el start on boot
-            arg.minimize_to_tray = arg.start_on_boot
-            this.Update(arg)
+            if (arg.start_on_boot) {
+                arg.minimize_to_tray = true
+            }
+            self.Update(arg)
         })
         // Create auto-launcher
         this.launcher = new AutoLaunch({
@@ -59,7 +61,7 @@ export class Settings {
         if (platform == "darwin") {
             tray.setPressedImage(baseFolder + "/img/trayHighlight.png")
         }
-        tray.setToolTip("Actualizador Contaplus")
+        tray.setToolTip("Conector Contaplus smartBI")
         tray.setContextMenu(trayMenu)
         tray.on("double-click", () => {
             if (self.window) {
@@ -96,6 +98,8 @@ export class Settings {
                 if (!self.quitting) {
                     event.preventDefault()
                     self.window.hide();
+                } else if (self.window.saveState) {
+                    self.window.saveState();
                 }
             })
         } else {

@@ -347,11 +347,12 @@ export class CoheteModel {
         let self = this
         let timeout = self.env.task_timeout
         let interval = self.env.task_interval
-        let elapsed = 0
+        let start = Date.now()
         let banner = "<p>Por favor espere mientras se procesan los datos en el servidor. Esta operación puede tardar unos minutos.</p>"
         progress_callback(100, banner)
         return new Promise((resolve, reject) => {
             self.checkTaskRunning(url, token, task, interval, (err, running) => {
+                let elapsed = Date.now() - start
                 if (err !== null) {
                     reject(self._error(err))
                 } else if (!running) {
@@ -359,7 +360,6 @@ export class CoheteModel {
                 } else if (elapsed >= timeout) {
                     reject(new Error("Se sobrepasó el tiempo máximo de espera ejecutando la tarea"))
                 } else {
-                    elapsed += interval
                     let percent = Math.floor((elapsed * 100)/timeout)
                     let seconds = Math.floor(elapsed / 1000)
                     let mins = ("00" + Math.floor(seconds / 60)).slice(-2)

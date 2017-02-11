@@ -26,12 +26,12 @@ export class AjustesModel {
                 ["start_on_boot",
                     (start_on_boot === undefined) ? env.start_on_boot : start_on_boot,
                     "Arrancar automáticamente al iniciar sesión"],
-                ["minimize_to_tray",
-                    (minimize_to_tray === undefined) ? env.minimize_to_tray : minimize_to_tray,
-                    "Mantener en la bandeja de tareas"],
                 ["auto_update",
                     (auto_update === undefined) ? env.auto_update : auto_update,
                     "Actualizar automáticamente"]*/
+                ["minimize_to_tray",
+                    (minimize_to_tray === undefined) ? env.minimize_to_tray : minimize_to_tray,
+                    "Mantener la aplicación minimizada en la bandeja de aplicaciones"],
                 ["remove_config",
                     false,
                     "Borrar todas las configuraciones"]
