@@ -12,7 +12,7 @@
   "max_file_size": 64000000,
   "url_credentials": "https://smartbi.acens.net/api/contaplus/login",
   "url_validate": "https://smartbi.acens.net/api/contaplus/check-token",
-  "url_upload": "https://devel.smartbi.es/tenants/TENANT/api/files",
+  "url_upload": "https://smartbi.acens.net/tenants/TENANT/api/files",
   "url_config": "https://smartbi.acens.net/api/contaplus/set-data",
   "url_timeout": 5000,
 

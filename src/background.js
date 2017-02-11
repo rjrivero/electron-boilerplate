@@ -45,10 +45,10 @@ app.on('ready', function () {
 
     mainWindow = createWindow('main', {
         width: 860,
-        height: 600,
+        height: 680,
         minWidth: env.window_min_width,
         maxWidth: env.window_max_width,
-        minHeight: 200
+        minHeight: 460
     });
 
     mainWindow.loadURL(url.format({

@@ -89,29 +89,35 @@ export class CoheteModel {
         console.log(`CoheteModel::_file(${url})`)
         let self = this
         return new Promise((resolve, reject) => {
-            try {
-                // Notify upload progress
-                let streamFile = fs.createReadStream(stat.localFile)
-                streamFile.on('data', callback)
-                // Post file
-                let req = unirest.post(url)
-                .header('Accept', 'application/json')
-                .timeout(self.env.url_timeout)
-                if (token) {
-                    req = req.header("X-Access-Token", token)
+            // Notify upload progress
+            let streamFile = fs.createReadStream(stat.localFile)
+            streamFile.on('data', callback)
+            // Ugly workaround for Acens cert. See
+            // http://stackoverflow.com/questions/20082893/unable-to-verify-leaf-signature
+            process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+            // Post file
+            unirest.post(url)
+            .header('Accept', 'application/json')
+            .header('X-Access-Token', token)
+            .field('folder', stat.remoteFolder)
+            .attach('file', streamFile)
+            .timeout(self.env.url_timeout)
+            .end((response) => {
+                if (response.ok) {
+                    resolve(response)
+                } else {
+                    reject(response)
                 }
-                req.field('folder', stat.remoteFolder)
-                .attach('file', streamFile)
-                .end((response) => {
-                    if (response.ok) {
-                        resolve(response)
-                    } else {
-                        reject(self._error(response))
-                    }
-                })
-            } catch(err) {
-                reject(self._error(err))
-            }
+            })
+        })
+        .then((response) => {
+            // Undo hack...
+            process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '1';
+            return response
+        })
+        .catch((err) => {
+            console.log(`CoheteModel::_file: Error ${JSON.stringify(err)}`)
+            throw self._error(err)
         })
     }
 
