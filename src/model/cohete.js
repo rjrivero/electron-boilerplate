@@ -25,7 +25,8 @@ export class CoheteModel {
         this.config.set("email", email)
     }
 
-    // launches an ajax request
+    // launches an ajax request.
+    // Data can be null, a string (URL encoded) or an object (sent as JSON)
     _ajax(method, url, data, token) {
         let self = this
         let options = {
@@ -39,8 +40,13 @@ export class CoheteModel {
             options.headers['X-Access-Token'] = token
         }
         if (data) {
-            options.headers['Content-Type'] = 'application/json; charset=utf-8'
-            options.body = JSON.stringify(data)
+            if (typeof data === 'string') {
+                options.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+                options.body = data
+            } else {
+                options.headers['Content-Type'] = 'application/json; charset=utf-8'
+                options.body = JSON.stringify(data)
+            }
         }
         return fetch(url, options)
         .then((response) => {
@@ -66,7 +72,7 @@ export class CoheteModel {
     _get(url, data, token) {
         console.log(`CoheteModel::_get(${url})`)
         if (data) {
-            let vars = Object.keys(data).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&')
+            let vars = Object.keys(data).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(data[k])}`).join('&')
             url = url + "?" + vars
         }
         return this._ajax("GET", url, null, token)
@@ -227,22 +233,20 @@ export class CoheteModel {
         let self = this
         return self.uploadAll(contaplus, progress_callback)
         .then((done) => {
+            // Load contaplus config data
             let url = self.env.url_config.replace("TENANT", self.getTenant())
             let selection = contaplus.GetSelectedModel()
             progress_callback(100, "Configurando trabajos de actualización")
             return self._post(url, selection, self.getToken())
         })
         .then((done) => {
-            return "Ejecución de trabajos completada"
+            // Run the contaplus update task
+            return self.runTask(progress_callback)
         })
-    }
-
-    // Sends a "run" command, waits for completion
-    runTask(progress_callback) {
-        let self = this
-        let url = self.env.url_process
-        let progress = 10
-        progress_callback(10, "Lanzando trabajo de actualización")
+        .then((result) => {
+            console.log(`CoheteModel::SubmitContaplus: result = ${JSON.stringify(result)}`)
+            return "Todos los trabajos ejecutados correctamente"
+        })
     }
 
     // Uploads all files, reports progress
@@ -294,7 +298,6 @@ export class CoheteModel {
             progress += chunk.length
             let percent = Math.min(Math.floor((progress * 100) / totalSize), 100)
             progress_callback(percent, message)
-
         })
         .then((response) => {
             console.log("uploadNext: " + JSON.stringify(response.body))
@@ -306,6 +309,91 @@ export class CoheteModel {
             // If file upload was successful, go for the next one
             return self.uploadNext(stats, totalSize, index+1, progress_callback)
         })
+    }
+
+    // Sends a "run" command, waits for completion
+    runTask(progress_callback) {
+        console.debug(`CoheteModel::runTask`)
+        let progress = 10
+        let self = this
+        let refresh = "refresh=contaplus"
+        let token = self.getToken()
+        let url = self.env.url_process.replace("TENANT", self.getTenant())
+        progress_callback(10, "Lanzando trabajo de actualización")
+        return self._post(url + "?" + refresh, refresh, token)
+        .then((response) => {
+            // Start the job and get the task number
+            let message = response.body.message
+            if (message && message.running && message.order) {
+                return message.order
+            }
+            throw self._error(response)
+        })
+        .then((task) => {
+            return self.waitForTask(url, token, task, progress_callback)
+        })
+    }
+
+    // Waits until the runner task is finished
+    waitForTask(url, token, task, progress_callback) {
+        console.debug(`CoheteModel::waitForTask(${task})`)
+        // monitor for completion of the task
+        let self = this
+        let timeout = self.env.task_timeout
+        let interval = self.env.task_interval
+        let elapsed = 0
+        let banner = "<p>Por favor espere mientras se procesan los datos en el servidor. Esta operación puede tardar unos minutos.</p>"
+        progress_callback(100, banner)
+        return new Promise((resolve, reject) => {
+            self.checkTaskRunning(url, token, task, interval, (err, running) => {
+                if (err !== null) {
+                    reject(self._error(err))
+                } else if (!running) {
+                    resolve(true)
+                } else if (elapsed >= timeout) {
+                    reject(new Error("Se sobrepasó el tiempo máximo de espera ejecutando la tarea"))
+                } else {
+                    elapsed += interval
+                    let percent = Math.floor((elapsed * 100)/timeout)
+                    let seconds = Math.floor(elapsed / 1000)
+                    let mins = ("00" + Math.floor(seconds / 60)).slice(-2)
+                    let secs = ("00" + (seconds % 60)).slice(-2)
+                    progress_callback(100, banner + `<p>Procesando datos (tiempo transcurrido: ${mins}:${secs})</p>`)
+                    return false // keep waiting
+                }
+                return true // done
+            })
+        })
+    }
+
+    // Checks the status of the task periodically.
+    // The callback is called every "interval" milliseconds
+    // with an error object (if any), and the state of
+    // the task. If the callback returns "true", the
+    // loop is interrupted. Otherwise, we keep asking.
+    checkTaskRunning(url, token, task, interval, callback) {
+        console.debug(`CoheteModel::checkTaskRunning(task: ${task}, interval: ${interval})`)
+        let self = this
+        setTimeout(() => {
+            self._get(url, { check: task }, token)
+            .then((response) => {
+                console.debug(`CoheteModel::checkTaskRunning: current status = ${JSON.stringify(response.body)}`)
+                let done = false
+                // Give the callback a chance to report progress or stop
+                let message = response.body.message
+                if (message && !(message.running === undefined)) {
+                    done = callback(null, message.running)
+                } else {
+                    callback(message, null)
+                    done = true
+                }
+                // If not done yet, keep checking
+                if (!done) {
+                    self.checkTaskRunning(url, token, task, interval, callback)
+                }
+            })
+            .catch((err) => { callback(err, null) })
+        }, interval)
     }
 
     // Clears the cached configs
