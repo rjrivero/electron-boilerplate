@@ -18,6 +18,23 @@ import env from './env';
 var mainWindow;
 var settings;
 
+// Make application single instance.
+// See https://github.com/electron/electron/blob/v0.36.10/docs/api/app.md#appmakesingleinstancecallback
+var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+        if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+        }
+        mainWindow.show();
+        mainWindow.focus();
+    }
+})
+
+if (shouldQuit) {
+    app.quit();
+}
+
 // Application id to send and receive notifications
 // See https://github.com/electron-userland/electron-builder/wiki/NSIS
 const appId = "com.fivecorporation.smartbi.contaplus.desktop"
