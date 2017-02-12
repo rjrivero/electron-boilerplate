@@ -192,7 +192,8 @@
          <!-- Default panel contents -->
             <div class="panel-heading"><a href="#" data-toggle="hidden" data-parent="#tab_asistente" data-target="#lanza_trabajo_body">Actualiza los datos</a></div>
             <div id="lanza_trabajo_body" class="panel-body hidden">
-                <table class="table table-condensed table-striped table-bordered" id="lanza_trabajo_table"><tbody>
+                <div id="lanza_trabajo_table">
+                    <table class="table table-condensed table-striped table-bordered"><tbody>
                         <tr><td><a href="#" id="expand_credenciales_usuario_body">Usuario</a></td><td><span id="lanza_trabajo_usuario"/></td></tr>
                         <tr><td><a href="#" id="expand_ruta_contaplus_body">Ruta Contaplus</a></td><td><span id="lanza_trabajo_ruta"/></td></tr>
                         <tr><td><a href="#" id="expand_empresa_contaplus_body">Empresa</a></td><td><span id="lanza_trabajo_empresa"/></td></tr>
@@ -203,6 +204,7 @@
                         <button type="submit" class="btn disabled" disabled id="lanza_trabajo_apply">Ejecutar</button>
                     </div>
                     </form>
+                </div>
                 <div id="lanza_trabajo_notice" class="hidden">
                     <p>Antes de poder actualizar los datos, debes utilizar el <a href="https://smartbi.acens.net/asistente/fuentes" class="js-external-link">Asistente</a> para asociar tu contaplus al menos a una de las fuentes de datos de <b>smartBI</b>.</p>
                     <p>Una vez completada la configuración de tus fuentes, por favor <a href="#" id="lanza_trabajo_refresh">pulsa aquí</a> para ocultar este mensaje y continuar.

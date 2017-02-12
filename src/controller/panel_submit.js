@@ -16,11 +16,7 @@ export class SubmitPanel extends Panel {
         this.refresh.off().on("click", (event) => {
             console.log("Activando " + self.prefix + "_refresh")
             event.preventDefault()
-            self.canApply().then((can) => {
-                if(can) {
-                    self.triggerSelected()
-                }
-            })
+            self.updateApply()
         })
         this.bindings = new Map()
         for (let entry of this.model.GetSelected().keys()) {
@@ -61,9 +57,10 @@ export class SubmitPanel extends Panel {
     canApply() {
         // First of all, can only apply if all fields have values
         let self = this
-        self.notice.addClass('hidden')
         for (let entry of self.model.GetSelected().entries()) {
             if (!entry[1]) {
+                self.table.removeClass('hidden')
+                self.notice.addClass('hidden')
                 return Promise.resolve(false)
             }
         }
@@ -75,8 +72,10 @@ export class SubmitPanel extends Panel {
             self.hideSpinner()
             // Show the notice if the backend is not configured.
             if (can) {
+                self.table.removeClass('hidden')
                 self.notice.addClass('hidden')
             } else {
+                self.table.addClass('hidden')
                 self.notice.removeClass('hidden')
             }
             return can
@@ -85,6 +84,7 @@ export class SubmitPanel extends Panel {
             // Authentication error, no can apply
             console.log("SubmitPanel::canApply: Error reemplazado por 'false'")
             self.hideSpinner()
+            self.table.removeClass('hidden')
             self.notice.addClass('hidden')
             return false
         })

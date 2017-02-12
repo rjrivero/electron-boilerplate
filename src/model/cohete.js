@@ -242,7 +242,7 @@ export class CoheteModel {
     // Prefly Contaplus - Tests if Contaplus is configured
     PreflyContaplus(contaplus, progress_callback) {
         console.debug(`CoheteModel::PreflyContaplus`)
-        progress_callback(100)
+        progress_callback(100, "Comprobando configuración de fuentes")
         // Check if there is currently some binding from
         // contaplus to sources
         let self = this
