@@ -160,7 +160,13 @@ export class CoheteModel {
                     return true
                 }
             }
-            return false
+            throw new Error("Nombre de usuario o clave incorrectas")
+        })
+        .catch((err) => {
+            // After a failure, remove tenant and token
+            self.setTenant(null)
+            self.setToken(null)
+            throw err
         })
     }
 
@@ -242,6 +248,12 @@ export class CoheteModel {
         let self = this
         let tenant = self.getTenant()
         let token = self.getToken()
+        // If authentication fails, this._get throws an error.
+        // We want to mimic that behaviour if there are no credentials
+        if (!tenant || !token) {
+            return Promise.reject(new Error("Nombre de usuario o contraseña incorrectos"))
+        }
+        // If we have both tenant and token, test it
         let url = this.env.url_validate.replace("TENANT", tenant)
         return this._get(url, null, token)
         .then((response) => {

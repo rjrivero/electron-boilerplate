@@ -26,6 +26,10 @@ export class Panel {
                     self.triggerSelected()
                 }
             })
+            .catch((err) => {
+                console.log(this.prefix + "::onClick - canApply triggered error")
+                self.triggerError()
+            })
         })
     }
 
@@ -72,6 +76,11 @@ export class Panel {
             } else {
                 disableButton(self.apply)
             }
+        })
+        .catch((err) => {
+            console.log(this.prefix + "::updateApply - canApply triggered error")
+            disableButton(self.apply)
+            self.triggerError(err)
         })
     }
 

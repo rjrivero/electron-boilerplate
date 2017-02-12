@@ -51,6 +51,8 @@ export class SubmitPanel extends Panel {
         for (let entry of this.bindings.entries()) {
             entry[1][0].innerHTML = ""
         }
+        // Disable apply button
+        this.updateApply()
         //this.table.addClass("hidden")
         super.Blur(propagate)
     }
@@ -59,9 +61,9 @@ export class SubmitPanel extends Panel {
     canApply() {
         // First of all, can only apply if all fields have values
         let self = this
+        self.notice.addClass('hidden')
         for (let entry of self.model.GetSelected().entries()) {
             if (!entry[1]) {
-                self.notice.addClass('hidden')
                 return Promise.resolve(false)
             }
         }
@@ -69,10 +71,6 @@ export class SubmitPanel extends Panel {
         self.progress.css("width", "0%")
         self.showSpinner()
         return self.model.Prefly(self.updateSpinner.bind(self))
-        .catch((err) => {
-            console.log(`SubmitPanel::canApply:PreflightError = ${JSON.stringify(err)}`)
-            return false
-        })
         .then((can) => {
             self.hideSpinner()
             // Show the notice if the backend is not configured.
@@ -82,6 +80,13 @@ export class SubmitPanel extends Panel {
                 self.notice.removeClass('hidden')
             }
             return can
+        })
+        .catch((err) => {
+            // Authentication error, no can apply
+            console.log("SubmitPanel::canApply: Error reemplazado por 'false'")
+            self.hideSpinner()
+            self.notice.addClass('hidden')
+            return false
         })
     }
 

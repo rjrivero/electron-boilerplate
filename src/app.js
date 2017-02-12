@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     login_cohete.onCleared(() => { ruta_contaplus.Blur(true) })
     login_cohete.onError((err) => {
         showErrorDialog("Error iniciando sesión", err)
+        lanza_trabajo.Blur(true)
     })
 
     // Enlazar eventos de ruta_contaplus
