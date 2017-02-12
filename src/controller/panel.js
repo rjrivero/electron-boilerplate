@@ -27,7 +27,7 @@ export class Panel {
                 }
             })
             .catch((err) => {
-                console.log(this.prefix + "::onClick - canApply triggered error")
+                disableButton(self.apply)
                 self.triggerError()
             })
         })
@@ -78,7 +78,7 @@ export class Panel {
             }
         })
         .catch((err) => {
-            console.log(this.prefix + "::updateApply - canApply triggered error")
+            disableButton(self.apply)
             self.triggerError(err)
         })
     }
