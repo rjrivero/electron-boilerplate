@@ -364,15 +364,18 @@ export class CoheteModel {
         console.debug(`CoheteModel::runTask`)
         let progress = 10
         let self = this
-        let refresh = "refresh=contaplus"
+        let refresh = {
+            label: "Conector Contaplus de escritorio",
+            conectors: ["contaplus"]
+        }
         let token = self.getToken()
         let url = self.env.url_process.replace("TENANT", self.getTenant())
         progress_callback(10, "Lanzando trabajo de actualización")
-        return self._post(url + "?" + refresh, refresh, token)
+        return self._post(url, refresh, token)
         .then((response) => {
             // Start the job and get the task number
             let message = response.body.message
-            if (message && message.running && message.order) {
+            if (message && message.order) {
                 return message.order
             }
             throw self._error(response)
