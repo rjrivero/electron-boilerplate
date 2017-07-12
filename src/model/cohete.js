@@ -2,6 +2,7 @@ import { ContaplusCompany } from './contaplus'
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import unirest from 'unirest';
+import util from 'util';
 
 export class CoheteModel {
 
@@ -60,7 +61,7 @@ export class CoheteModel {
         })
         .then((response) => {
             if (response.status == 200) {
-                console.log(`Cohete::_ajax: Got Response ${JSON.stringify(response)}`)
+                console.log(`Cohete::_ajax: Got Response ${util.inspect(response)}`)
                 return response
             } else {
                 throw self._error(response)
@@ -116,7 +117,7 @@ export class CoheteModel {
             return response
         })
         .catch((err) => {
-            console.log(`CoheteModel::_file: Error ${JSON.stringify(err)}`)
+            console.log(`CoheteModel::_file: Error ${util.inspect(err)}`)
             throw self._error(err)
         })
     }
@@ -129,7 +130,7 @@ export class CoheteModel {
         if (err.body && err.body.message) {
             newErr += "<p>El servidor respondió: " + err.body.message + "</p>"
         } else if (err.status && err.status != 401) {
-            newErr += "<p>Si el error persiste, por favor incluya estos detalles al reportar su incidencia:</p><pre>" + JSON.stringify(err) + "</pre>"
+            newErr += "<p>Si el error persiste, por favor incluya estos detalles al reportar su incidencia:</p><pre>" + util.inspect(err) + "</pre>"
         }
         return new Error(newErr)
     }
@@ -204,7 +205,7 @@ export class CoheteModel {
         let tenant = self.getTenant()
         return self._get(url.replace("TENANT", tenant), null, token)
         .then((response) => {
-            console.log("CheckToken: " + JSON.stringify(response.body))
+            console.log("CheckToken: " + util.inspect(response.body))
             return response.body.success
         })
     }
@@ -292,7 +293,7 @@ export class CoheteModel {
             return self.runTask(progress_callback)
         })
         .then((result) => {
-            console.log(`CoheteModel::SubmitContaplus: result = ${JSON.stringify(result)}`)
+            console.log(`CoheteModel::SubmitContaplus: result = ${util.inspect(result)}`)
             return "Todos los trabajos ejecutados correctamente"
         })
     }
@@ -348,7 +349,7 @@ export class CoheteModel {
             progress_callback(percent, message)
         })
         .then((response) => {
-            console.log("uploadNext: " + JSON.stringify(response.body))
+            console.log("uploadNext: " + util.inspect(response.body))
             // Fail early if any file upload does not work
             if (response.body.success !== true) {
                 throw new Error("No se ha podido subir el fichero " + current.localFile +
@@ -428,7 +429,7 @@ export class CoheteModel {
         setTimeout(() => {
             self._get(url, { check: task }, token)
             .then((response) => {
-                console.debug(`CoheteModel::checkTaskRunning: current status = ${JSON.stringify(response.body)}`)
+                console.debug(`CoheteModel::checkTaskRunning: current status = ${util.inspect(response.body)}`)
                 let done = false
                 // Give the callback a chance to report progress or stop
                 let message = response.body.message
